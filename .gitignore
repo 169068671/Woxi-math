@@ -1,0 +1,12 @@
+.DS_Store
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+venv/
+.mplconfig/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.*
+*.tmp
+.ipynb_checkpoints/

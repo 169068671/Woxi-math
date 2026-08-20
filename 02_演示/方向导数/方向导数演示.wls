@@ -1,0 +1,57 @@
+(* 方向导数演示 —— 给 Woxi 在线 Playground 用
+ *
+ * 打开：https://woxi.ad-si.com/playground/
+ * 把本文件全部粘贴进去，点 Run（或 Shift+Enter）
+ * 不要用本机 Woxi Studio（macOS 26 上会崩溃）
+ *
+ * f(x,y)=(x^2+y^2)/4 ，点 P(1,1)
+ * 青色 = 水平方向 u
+ * 绿色 = 精确方向导数（切线）
+ * 橙色 = 当前步长 h 的近似（割线）
+ *)
+
+Manipulate[
+ Module[{ux, uy, Ph, fPh, slope, exD, P, fP, arrowScale},
+  P = {1, 1};
+  fP = 1/2;
+  arrowScale = 1.5;
+  ux = Cos[theta];
+  uy = Sin[theta];
+  Ph = P + h {ux, uy};
+  fPh = (Ph[[1]]^2 + Ph[[2]]^2)/4;
+  slope = (fPh - fP)/h;
+  exD = {1/2, 1/2} . {ux, uy};
+  Column[{
+    Row[{
+      "approx  ", NumberForm[N[slope], {5, 3}],
+      "    exact  ", NumberForm[N[exD], {5, 3}]
+    }],
+    Show[
+     Plot3D[(x^2 + y^2)/4, {x, -1, 3}, {y, -1, 3},
+      PlotStyle -> Opacity[0.45],
+      Mesh -> 6,
+      PlotRange -> {0, 4}],
+     Graphics3D[{
+       Cyan,
+       Arrow[{{1, 1, 0}, {1 + arrowScale ux, 1 + arrowScale uy, 0}}],
+       RGBColor[0, 0.85, 0.3], Thick,
+       Arrow[{Append[P, fP], Append[P, fP] + arrowScale {ux, uy, exD}}],
+       Orange,
+       Arrow[{Append[P, fP], Append[P, fP] + arrowScale {ux, uy, slope}}],
+       Orange, Thick,
+       Line[{Append[P, fP], Append[Ph, fPh]}],
+       Red, Sphere[Append[P, fP], 0.08],
+       Orange, Sphere[Append[Ph, fPh], 0.06],
+       Black, Text["P", Append[P, fP] + {0, 0, 0.22}],
+       Black, Text["Ph", Append[Ph, fPh] + {0, 0, 0.22}]
+     }],
+     AxesLabel -> {"x", "y", "z"},
+     ViewPoint -> {2.5, -2.5, 1.8},
+     BoxRatios -> {1, 1, 0.6},
+     ImageSize -> 480
+    ]
+  }]
+ ],
+ {{theta, Pi/4}, 0, 2 Pi, 0.05},
+ {{h, 1.0}, 0.05, 2.0, 0.05}
+]

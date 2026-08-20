@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向导数演示</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a2e; color: #e0e0e0; font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif; overflow: hidden; }
+#canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+
+.panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 340px;
+  background: rgba(22, 22, 38, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(100, 100, 200, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  z-index: 10;
+}
+
+.panel h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #7eb8ff;
+}
+
+.panel .subtitle {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.control-group {
+  margin-bottom: 16px;
+}
+
+.control-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.control-label .value {
+  font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 13px;
+  color: #7eb8ff;
+  font-weight: 600;
+}
+
+input[type=range] {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #7eb8ff;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #1a1a2e;
+}
+
+input[type=range]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #7eb8ff;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #1a1a2e;
+}
+
+.info-box {
+  margin-top: 20px;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.info-row .label { color: #aaa; }
+.info-row .num { font-family: 'SF Mono', 'Menlo', monospace; font-weight: 600; }
+.info-row .approx { color: #ff9c40; }
+.info-row .exact { color: #5ac850; }
+.info-row .error { color: #ff6464; }
+
+.legend {
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.formula {
+  margin-top: 12px;
+  padding: 10px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  font-size: 12px;
+  text-align: center;
+  color: #ccc;
+  line-height: 1.6;
+}
+
+.formula sub { font-size: 9px; }
+</style>
+</head>
+<body>
+<div id="canvas-container"></div>
+
+<div class="panel">
+  <h1>方向导数演示</h1>
+  <div class="subtitle">
+    f(x,y) = (x² + y²) / 4 &nbsp;|&nbsp; P(1, 1)<br>
+    梯度 grad f(1,1) = (0.5, 0.5)
+  </div>
+
+  <div class="control-group">
+    <div class="control-label">
+      <span>方向角 θ</span>
+      <span class="value" id="theta-val">45.0°</span>
+    </div>
+    <input type="range" id="theta-slider" min="0" max="360" value="45" step="1">
+  </div>
+
+  <div class="control-group">
+    <div class="control-label">
+      <span>步长 h</span>
+      <span class="value" id="h-val">1.500</span>
+    </div>
+    <input type="range" id="h-slider" min="0.01" max="2.0" value="1.5" step="0.01">
+  </div>
+
+  <div class="control-group">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;">
+      <input type="checkbox" id="all-dir-toggle" style="width:16px;height:16px;cursor:pointer;">
+      <span>显示所有方向的方向导数</span>
+    </label>
+  </div>
+
+  <canvas id="polar-plot" width="290" height="200" style="display:none;margin:8px auto 0;background:rgba(0,0,0,0.3);border-radius:8px;"></canvas>
+
+  <div class="info-box">
+    <div class="info-row">
+      <span class="label">h =</span>
+      <span class="num" id="info-h">1.500</span>
+    </div>
+    <div class="info-row">
+      <span class="label">近似 D* =</span>
+      <span class="num approx" id="info-approx">—</span>
+    </div>
+    <div class="info-row">
+      <span class="label">精确 D =</span>
+      <span class="num exact" id="info-exact">—</span>
+    </div>
+    <div class="info-row">
+      <span class="label">误差 =</span>
+      <span class="num error" id="info-error">—</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:#00CED1"></span> 青色 = 方向向量 u</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#5ac850"></span> 绿色 = 精确方向导数（切线）</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#ff9c40"></span> 橙色 = 当前 h 的近似值</div>
+    <div class="legend-item"><span class="legend-dot" style="background:rgba(255,200,50,0.4)"></span> 半透明黄 = 各检查点箭头</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#fff"></span> 白色 = 梯度方向（全方向模式）</div>
+  </div>
+
+  <div class="formula">
+    D<sub>u</sub>f(a,b) = lim<sub>h→0</sub> [f(a+hu₁, b+hu₂) − f(a,b)] / h<br>
+    = ∇f(a,b) · u
+  </div>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script>
+// --- 数学函数 ---
+function f(x, y) { return (x*x + y*y) / 4; }
+function gradF(x, y) { return [x/2, y/2]; }
+function dirDeriv(x, y, ux, uy) {
+  const g = gradF(x, y);
+  return g[0]*ux + g[1]*uy;
+}
+
+const P = [1, 1];
+const fP = f(1, 1);
+const arrowScale = 1.5;
+const checkpoints = [1.5, 1.0, 0.7, 0.4, 0.2, 0.1, 0.05, 0.01];
+
+// --- Three.js 场景 ---
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1a2e);
+scene.fog = new THREE.Fog(0x1a1a2e, 8, 20);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(5, -5, 4.5);
+camera.lookAt(1, 1, 1);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+// 光源
+const ambientLight = new THREE.AmbientLight(0x666688, 0.6);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dirLight.position.set(5, -3, 8);
+scene.add(dirLight);
+
+// 坐标轴（带刻度）
+function makeAxisWithTicks(axis, min, max, step, label) {
+  const group = new THREE.Group();
+  const axisColor = 0x666688;
+  const tickColor = 0x555577;
+  const labelColor = '#9999bb';
+
+  // 主轴线
+  const points = [];
+  if (axis === 'x') {
+    points.push(new THREE.Vector3(min, 0, -1), new THREE.Vector3(max, 0, -1));
+  } else if (axis === 'y') {
+    points.push(new THREE.Vector3(-1, 0, min), new THREE.Vector3(-1, 0, max));
+  } else {
+    points.push(new THREE.Vector3(-1, 0, -1), new THREE.Vector3(-1, 0, -1 + max));
+  }
+  group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),
+    new THREE.LineBasicMaterial({ color: axisColor, transparent: true, opacity: 0.5 })));
+
+  // 刻度和数字
+  for (let v = Math.ceil(min); v <= max; v += step) {
+    const tickLen = 0.08;
+    let tickPts, labelPos;
+    if (axis === 'x') {
+      tickPts = [new THREE.Vector3(v, 0, -1 - tickLen), new THREE.Vector3(v, 0, -1 + tickLen)];
+      labelPos = new THREE.Vector3(v, 0, -1 - 0.25);
+    } else if (axis === 'y') {
+      tickPts = [new THREE.Vector3(-1 - tickLen, 0, v), new THREE.Vector3(-1 + tickLen, 0, v)];
+      labelPos = new THREE.Vector3(-1 - 0.25, 0, v);
+    } else {
+      tickPts = [new THREE.Vector3(-1 - tickLen, 0, -1 + v), new THREE.Vector3(-1 + tickLen, 0, -1 + v)];
+      labelPos = new THREE.Vector3(-1 - 0.25, v, -1);
+    }
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(tickPts),
+      new THREE.LineBasicMaterial({ color: tickColor, transparent: true, opacity: 0.5 })));
+
+    // 数字标签
+    const canvas = document.createElement('canvas');
+    canvas.width = 48; canvas.height = 24;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = labelColor;
+    ctx.font = '16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(v), 24, 12);
+    const tex = new THREE.CanvasTexture(canvas);
+    const sprMat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+    const spr = new THREE.Sprite(sprMat);
+    spr.position.copy(labelPos);
+    spr.scale.set(0.35, 0.18, 1);
+    group.add(spr);
+  }
+
+  // 轴名标签
+  const canvas = document.createElement('canvas');
+  canvas.width = 48; canvas.height = 24;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#aaaacc';
+  ctx.font = 'bold 18px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, 24, 12);
+  const tex = new THREE.CanvasTexture(canvas);
+  const sprMat = new THREE.SpriteMaterial({ map: tex, transparent: true });
+  const spr = new THREE.Sprite(sprMat);
+  if (axis === 'x') spr.position.set(max + 0.35, 0, -1);
+  else if (axis === 'y') spr.position.set(-1, 0, max + 0.35);
+  else spr.position.set(-1, max + 0.15, -1);
+  spr.scale.set(0.35, 0.18, 1);
+  group.add(spr);
+
+  return group;
+}
+
+scene.add(makeAxisWithTicks('x', -1, 3, 1, 'x'));
+scene.add(makeAxisWithTicks('y', -1, 3, 1, 'y'));
+scene.add(makeAxisWithTicks('z', 0, 4, 1, 'z'));
+
+// --- 曲面 ---
+const n = 24;
+const xMin = -1, xMax = 3, yMin = -1, yMax = 3;
+
+function createSurface() {
+  const geometry = new THREE.BufferGeometry();
+  const vertices = [];
+  const indices = [];
+  const colors = [];
+
+  for (let i = 0; i <= n; i++) {
+    for (let j = 0; j <= n; j++) {
+      const x = xMin + (xMax - xMin) * i / n;
+      const y = yMin + (yMax - yMin) * j / n;
+      const z = f(x, y);
+      vertices.push(x, z, y);
+
+      const t = z / 4;
+      colors.push(0.2 + 0.3 * t, 0.35 + 0.15 * t, 0.6 + 0.3 * (1 - t));
+    }
+  }
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      const a = i * (n + 1) + j;
+      const b = a + 1;
+      const c = a + n + 1;
+      const d = c + 1;
+      indices.push(a, c, b, b, c, d);
+    }
+  }
+
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+
+  const material = new THREE.MeshPhongMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.35,
+    side: THREE.DoubleSide,
+    shininess: 30
+  });
+
+  return new THREE.Mesh(geometry, material);
+}
+
+const surface = createSurface();
+scene.add(surface);
+
+// 网格线
+function createMeshLines() {
+  const group = new THREE.Group();
+  const mat = new THREE.LineBasicMaterial({ color: 0x444466, transparent: true, opacity: 0.4 });
+
+  for (let i = 0; i <= n; i++) {
+    const x = xMin + (xMax - xMin) * i / n;
+    const pts = [];
+    for (let j = 0; j <= n; j++) {
+      const y = yMin + (yMax - yMin) * j / n;
+      pts.push(new THREE.Vector3(x, f(x, y), y));
+    }
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
+  }
+  for (let j = 0; j <= n; j++) {
+    const y = yMin + (yMax - yMin) * j / n;
+    const pts = [];
+    for (let i = 0; i <= n; i++) {
+      const x = xMin + (xMax - xMin) * i / n;
+      pts.push(new THREE.Vector3(x, f(x, y), y));
+    }
+    group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
+  }
+
+  return group;
+}
+scene.add(createMeshLines());
+
+// --- 箭头创建函数 ---
+function createArrow(from, to, color, opacity, thick) {
+  const group = new THREE.Group();
+  const dir = new THREE.Vector3().subVectors(to, from);
+  const length = dir.length();
+  if (length < 0.001) return group;
+
+  dir.normalize();
+
+  const radius = thick ? 0.035 : 0.022;
+  const headLen = Math.min(0.25, length * 0.25);
+  const headRad = thick ? 0.07 : 0.055;
+  const bodyLen = length - headLen;
+
+  if (bodyLen > 0.001) {
+    const cylGeom = new THREE.CylinderGeometry(radius * 0.8, radius, bodyLen, 12);
+    const cylMat = new THREE.MeshPhongMaterial({
+      color, transparent: true, opacity: opacity || 1, shininess: 50
+    });
+    const cyl = new THREE.Mesh(cylGeom, cylMat);
+    cyl.position.copy(new THREE.Vector3().lerpVectors(from, to, 0.5 - headLen / (2 * length)));
+    cyl.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+    group.add(cyl);
+  }
+
+  const coneGeom = new THREE.ConeGeometry(headRad, headLen, 12);
+  const coneMat = new THREE.MeshPhongMaterial({
+    color, transparent: true, opacity: opacity || 1, shininess: 50
+  });
+  const cone = new THREE.Mesh(coneGeom, coneMat);
+  cone.position.copy(to.clone().addScaledVector(dir, -headLen / 2));
+  cone.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+  group.add(cone);
+
+  return group;
+}
+
+// --- 球体函数 ---
+function createSphere(pos, color, radius, opacity) {
+  const geom = new THREE.SphereGeometry(radius, 20, 20);
+  const mat = new THREE.MeshPhongMaterial({
+    color, transparent: !!opacity, opacity: opacity || 1, shininess: 80
+  });
+  const sphere = new THREE.Mesh(geom, mat);
+  sphere.position.set(pos[0], pos[1], pos[2]);
+  return sphere;
+}
+
+// --- 线段函数 ---
+function createLine(from, to, color, opacity, linewidth) {
+  const geom = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(from[0], from[1], from[2]),
+    new THREE.Vector3(to[0], to[1], to[2])
+  ]);
+  const mat = new THREE.LineBasicMaterial({ color, transparent: !!opacity, opacity: opacity || 1, linewidth: linewidth || 1 });
+  return new THREE.Line(geom, mat);
+}
+
+// --- 动态对象容器 ---
+let dynamicObjects = new THREE.Group();
+scene.add(dynamicObjects);
+
+// 坐标转换：数学坐标 (x, z, y) -> Three.js坐标
+function toVec3(x, y, z) { return new THREE.Vector3(x, z, y); }
+
+function update() {
+  // 清除旧对象
+  while (dynamicObjects.children.length > 0) {
+    const child = dynamicObjects.children[0];
+    dynamicObjects.remove(child);
+    if (child.geometry) child.geometry.dispose();
+    if (child.material) child.material.dispose();
+  }
+
+  const theta = parseFloat(document.getElementById('theta-slider').value) * Math.PI / 180;
+  const h = parseFloat(document.getElementById('h-slider').value);
+
+  const ux = Math.cos(theta);
+  const uy = Math.sin(theta);
+  const Ph = [P[0] + h * ux, P[1] + h * uy];
+  const fPh = f(Ph[0], Ph[1]);
+  const slope = (fPh - fP) / h;
+  const exD = dirDeriv(P[0], P[1], ux, uy);
+
+  const showAll = document.getElementById('all-dir-toggle').checked;
+
+  if (showAll) {
+    // --- 全方向模式：所有方向的方向导数箭头 ---
+    // 箭头长度 ∝ |方向导数值|，方向 = 切线方向 (ux, uy, D_u f)
+    for (let deg = 0; deg < 360; deg += 10) {
+      const a = deg * Math.PI / 180;
+      const dux = Math.cos(a);
+      const duy = Math.sin(a);
+      const dExD = dirDeriv(P[0], P[1], dux, duy);
+      const isCurrent = Math.abs(deg - (theta * 180 / Math.PI)) < 5 ||
+                        Math.abs(deg - (theta * 180 / Math.PI) % 360) < 5;
+
+      // 切线方向向量 (ux, uy, dExD)，归一化后乘以 |dExD| 得到箭头长度
+      const tangent = toVec3(dux, duy, dExD);
+      const tLen = tangent.length();
+      if (tLen > 0.001 && Math.abs(dExD) > 0.005) {
+        const tangentNorm = tangent.clone().normalize();
+        const arrowLen = arrowScale * 2.5 * Math.abs(dExD);
+        const from = toVec3(P[0], P[1], fP);
+        const to = from.clone().addScaledVector(tangentNorm, arrowLen);
+        if (isCurrent) {
+          dynamicObjects.add(createArrow(from, to, 0x5ac850, 1.0, true));
+        } else {
+          const color = dExD >= 0 ? 0x4a9a40 : 0x9a4a40;
+          dynamicObjects.add(createArrow(from, to, color, 0.4, false));
+        }
+      }
+    }
+
+    // 梯度方向标注（白色箭头，同样按比例）
+    const gradDir = Math.atan2(gradF(P[0], P[1])[1], gradF(P[0], P[1])[0]);
+    const gradMag = Math.sqrt(gradF(P[0], P[1])[0]**2 + gradF(P[0], P[1])[1]**2);
+    const gTangent = toVec3(Math.cos(gradDir), Math.sin(gradDir), gradMag);
+    const gTangentNorm = gTangent.clone().normalize();
+    const gArrowLen = arrowScale * 2.5 * gradMag;
+    const gFrom = toVec3(P[0], P[1], fP);
+    const gTo = gFrom.clone().addScaledVector(gTangentNorm, gArrowLen);
+    dynamicObjects.add(createArrow(gFrom, gTo, 0xffffff, 0.6, false));
+
+    // xy平面方向圆环
+    const ringPts = [];
+    for (let deg = 0; deg <= 360; deg += 5) {
+      const a = deg * Math.PI / 180;
+      ringPts.push(toVec3(P[0] + arrowScale * Math.cos(a), P[1] + arrowScale * Math.sin(a), 0));
+    }
+    const ringGeom = new THREE.BufferGeometry().setFromPoints(ringPts);
+    const ringMat = new THREE.LineBasicMaterial({ color: 0x4466aa, transparent: true, opacity: 0.4 });
+    dynamicObjects.add(new THREE.Line(ringGeom, ringMat));
+
+    // 当前方向的 xy 方向箭头
+    const dirFrom = toVec3(P[0], P[1], 0);
+    const dirTo = toVec3(P[0] + arrowScale * ux, P[1] + arrowScale * uy, 0);
+    dynamicObjects.add(createArrow(dirFrom, dirTo, 0x00CED1, 0.8, false));
+
+  } else {
+    // --- 单方向模式 ---
+    // 检查点箭头
+    for (const ch of checkpoints) {
+      const cPh = [P[0] + ch * ux, P[1] + ch * uy];
+      const cfPh = f(cPh[0], cPh[1]);
+      const cslope = (cfPh - fP) / ch;
+      const from = toVec3(P[0], P[1], fP);
+      const to = toVec3(P[0] + arrowScale * ux, P[1] + arrowScale * uy, fP + arrowScale * cslope);
+      dynamicObjects.add(createArrow(from, to, 0xffc832, 0.2, false));
+    }
+
+    // xy平面方向箭头
+    const dirFrom = toVec3(P[0], P[1], 0);
+    const dirTo = toVec3(P[0] + arrowScale * ux, P[1] + arrowScale * uy, 0);
+    dynamicObjects.add(createArrow(dirFrom, dirTo, 0x00CED1, 0.7, false));
+
+    // 精确方向导数箭头 (绿色)
+    const exactFrom = toVec3(P[0], P[1], fP);
+    const exactTo = toVec3(P[0] + arrowScale * ux, P[1] + arrowScale * uy, fP + arrowScale * exD);
+    dynamicObjects.add(createArrow(exactFrom, exactTo, 0x5ac850, 0.9, true));
+
+    // 近似方向导数箭头 (橙色)
+    const approxFrom = toVec3(P[0], P[1], fP);
+    const approxTo = toVec3(P[0] + arrowScale * ux, P[1] + arrowScale * uy, fP + arrowScale * slope);
+    dynamicObjects.add(createArrow(approxFrom, approxTo, 0xff9c40, 1.0, true));
+  }
+
+  // 曲面上的割线段
+  const secantFrom = toVec3(P[0], P[1], fP);
+  const secantTo = toVec3(Ph[0], Ph[1], fPh);
+  dynamicObjects.add(createLine(
+    [P[0], fP, P[1]], [Ph[0], fPh, Ph[1]],
+    0xff9c40, 0.7, 2
+  ));
+
+  // 沿方向u的截面曲线（单方向模式才显示）
+  if (!showAll) {
+    const curvePts = [];
+    for (let t = -0.2; t <= 2.0; t += 0.02) {
+      const x = P[0] + t * ux;
+      const y = P[1] + t * uy;
+      curvePts.push(toVec3(x, y, f(x, y)));
+    }
+    const curveGeom = new THREE.BufferGeometry().setFromPoints(curvePts);
+    const curveMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 });
+    dynamicObjects.add(new THREE.Line(curveGeom, curveMat));
+  }
+
+  // 点 P（全方向模式不显示 Ph）
+  dynamicObjects.add(createSphere([P[0], fP, P[1]], 0xff4444, 0.08, 1));
+  if (!showAll) {
+    dynamicObjects.add(createSphere([Ph[0], fPh, Ph[1]], 0xff9c40, 0.06, 1));
+  }
+
+  // 更新信息显示
+  document.getElementById('theta-val').textContent = (theta * 180 / Math.PI).toFixed(1) + '°';
+  document.getElementById('h-val').textContent = h.toFixed(3);
+  document.getElementById('info-h').textContent = h.toFixed(3);
+  document.getElementById('info-approx').textContent = slope.toFixed(4);
+  document.getElementById('info-exact').textContent = exD.toFixed(4);
+  document.getElementById('info-error').textContent = Math.abs(slope - exD).toFixed(4);
+
+  // --- 极坐标图 ---
+  if (showAll) {
+    drawPolarPlot(theta, exD);
+  }
+}
+
+function drawPolarPlot(currentTheta, currentValue) {
+  const canvas = document.getElementById('polar-plot');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const cx = w / 2, cy = h / 2;
+  const maxR = Math.min(w, h) / 2 - 25;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // 计算最大值用于缩放
+  const gradMag = Math.sqrt(0.5*0.5 + 0.5*0.5); // |grad f(1,1)|
+  const scale = maxR / (gradMag * 1.2);
+
+  // 同心圆刻度
+  ctx.strokeStyle = 'rgba(100,100,150,0.2)';
+  ctx.fillStyle = 'rgba(150,150,180,0.5)';
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'left';
+  for (let r = 0.25; r <= gradMag + 0.25; r += 0.25) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * scale, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fillText(r.toFixed(2), cx + 3, cy - r * scale + 2);
+  }
+
+  // 角度线
+  ctx.strokeStyle = 'rgba(100,100,150,0.15)';
+  for (let deg = 0; deg < 360; deg += 30) {
+    const a = deg * Math.PI / 180;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + maxR * Math.cos(a), cy - maxR * Math.sin(a));
+    ctx.stroke();
+  }
+
+  // 方向导数极坐标曲线
+  ctx.strokeStyle = '#5ac850';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let deg = 0; deg <= 360; deg += 2) {
+    const a = deg * Math.PI / 180;
+    const dux = Math.cos(a);
+    const duy = Math.sin(a);
+    const val = dirDeriv(P[0], P[1], dux, duy);
+    const r = val * scale;
+    const px = cx + r * Math.cos(a);
+    const py = cy - r * Math.sin(a);
+    if (deg === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(90,200,80,0.1)';
+  ctx.fill();
+
+  // 负值部分用红色
+  ctx.strokeStyle = '#9a4a40';
+  ctx.beginPath();
+  for (let deg = 0; deg <= 360; deg += 2) {
+    const a = deg * Math.PI / 180;
+    const dux = Math.cos(a);
+    const duy = Math.sin(a);
+    const val = dirDeriv(P[0], P[1], dux, duy);
+    if (val < 0) {
+      const r = val * scale;
+      const px = cx + r * Math.cos(a);
+      const py = cy - r * Math.sin(a);
+      if (ctx.lineDashOffset === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+  }
+
+  // 当前方向标注
+  const ca = currentTheta;
+  const cr = currentValue * scale;
+  const cpx = cx + cr * Math.cos(ca);
+  const cpy = cy - cr * Math.sin(ca);
+  ctx.fillStyle = '#ff9c40';
+  ctx.beginPath();
+  ctx.arc(cpx, cpy, 4, 0, 2 * Math.PI);
+  ctx.fill();
+
+  // 梯度方向标注
+  const gradDir = Math.atan2(0.5, 0.5);
+  const gradR = gradMag * scale;
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(cx + gradR * Math.cos(gradDir), cy - gradR * Math.sin(gradDir), 4, 0, 2 * Math.PI);
+  ctx.fill();
+
+  // 标签
+  ctx.fillStyle = '#8888aa';
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('方向导数 D_u f 关于 θ 的极坐标图', cx, h - 5);
+  ctx.textAlign = 'left';
+  ctx.fillText('● 白点=梯度方向(最大值)', 5, 12);
+  ctx.fillText('● 橙点=当前方向', 5, 24);
+}
+
+document.getElementById('theta-slider').addEventListener('input', update);
+document.getElementById('h-slider').addEventListener('input', update);
+
+document.getElementById('all-dir-toggle').addEventListener('change', function() {
+  const canvas = document.getElementById('polar-plot');
+  canvas.style.display = this.checked ? 'block' : 'none';
+  update();
+});
+
+// --- 鼠标控制 ---
+let mouseX = 0, mouseY = 0, isDragging = false;
+let camAngleH = Math.atan2(camera.position.x - 1, camera.position.z + camera.position.y - 1);
+let camAngleV = Math.atan2(camera.position.y, Math.sqrt((camera.position.x - 1)**2 + (camera.position.z)**2));
+let camDist = camera.position.distanceTo(new THREE.Vector3(1, 0, 1));
+
+document.addEventListener('mousedown', (e) => {
+  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'CANVAS') return;
+  isDragging = true;
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+document.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const dx = e.clientX - mouseX;
+  const dy = e.clientY - mouseY;
+  camAngleH -= dx * 0.005;
+  camAngleV = Math.max(0.1, Math.min(Math.PI / 2 - 0.05, camAngleV + dy * 0.005));
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+document.addEventListener('mouseup', () => { isDragging = false; });
+
+document.addEventListener('wheel', (e) => {
+  camDist = Math.max(3, Math.min(15, camDist + e.deltaY * 0.01));
+  e.preventDefault();
+}, { passive: false });
+
+// --- 动画循环 ---
+function animate() {
+  requestAnimationFrame(animate);
+
+  const cx = 1 + camDist * Math.cos(camAngleV) * Math.sin(camAngleH);
+  const cy = camDist * Math.sin(camAngleV);
+  const cz = 1 + camDist * Math.cos(camAngleV) * Math.cos(camAngleH);
+  camera.position.set(cx, cy, cz);
+  camera.lookAt(1, 1, 1);
+
+  renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+update();
+animate();
+</script>
+</body>
+</html>
