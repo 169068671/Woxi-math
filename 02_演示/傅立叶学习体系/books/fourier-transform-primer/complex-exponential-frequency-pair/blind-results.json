@@ -1,0 +1,47 @@
+{
+  "skill": "complex-exponential-frequency-pair",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "complex-exponential-frequency-pair",
+      "reason": "负频率的含义是该 skill 的直接触发问题，需用相反旋转方向解释。",
+      "if_triggered_action": "用欧拉公式把三角函数拆成正负复指数，标注复平面旋转方向、幅度和相位，再以实信号共轭配对验证重建。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "complex-exponential-frequency-pair",
+      "reason": "实信号频谱为何共轭对称正是该 skill 的核心解释和审计内容。",
+      "if_triggered_action": "从实信号条件推导 X(-ω)=X*(ω)，分别检查两侧幅度与相位关系，并用复信号作为不必共轭对称的反例。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "complex-exponential-frequency-pair",
+      "reason": "用户点名复指数双表示与正负频率配对，并要求离线可视实验。",
+      "if_triggered_action": "制作离线相量实验，同步显示两支反向旋转复指数、它们的和及余弦波，并允许调节幅度相位来检验实信号共轭配对。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询与复指数、频谱或正负频率无关。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "orthogonal-basis-audit",
+      "reason": "用户明确限定只解释另一个 skill 的适用场景，因此不调用本 skill。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "仅要求中文定义且明确排除推导和实验，属于本 skill 不适用的纯定义查询。",
+      "if_triggered_action": null
+    }
+  ]
+}

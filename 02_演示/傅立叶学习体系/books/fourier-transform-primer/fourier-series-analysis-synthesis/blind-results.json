@@ -1,0 +1,47 @@
+{
+  "skill": "fourier-series-analysis-synthesis",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "fourier-series-analysis-synthesis",
+      "reason": "用户要推导傅立叶级数系数，正是从周期、基频和复内积进入分析流程的核心任务。",
+      "if_triggered_action": "先确定周期 T 与基频，再把周期函数投影到各复指数谐波，推导系数中的共轭核和 1/T，并用综合式回代验证。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "fourier-series-analysis-synthesis",
+      "reason": "用有限谐波重建方波属于该 skill 的综合流程，并需要量化截断误差和说明间断点附近的 Gibbs 现象。",
+      "if_triggered_action": "计算方波的离散谐波系数，选择有限的正负谐波范围进行综合重建，绘制原函数与近似，并报告误差及 Gibbs 边界。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "fourier-series-analysis-synthesis",
+      "reason": "用户明确要求用离线实验讲清该 skill 的分析—综合双流程，任务与其执行步骤完全一致。",
+      "if_triggered_action": "制作可离线运行的实验：选择周期波形，逐项显示投影得到 c_n，再用可调谐波数综合重建，并同步显示频谱、时域误差与失败边界。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询不涉及周期函数、傅立叶级数系数或谐波重建。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "series-to-transform-limit",
+      "reason": "用户明确只要求另一个 skill 的适用场景；虽然两者相邻，当前 skill 不应在此处触发。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "请求仅限中文定义且排除推导和实验，属于 description 明确排除的纯定义查询。",
+      "if_triggered_action": null
+    }
+  ]
+}

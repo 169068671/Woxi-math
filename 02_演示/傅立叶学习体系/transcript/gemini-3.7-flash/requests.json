@@ -1,0 +1,345 @@
+{
+  "requests": [
+    {
+      "chunk": 1,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-00.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-00.txt",
+      "request_id": "gen-1787420728-Al8WyySDnjz24CkbPRtb",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 9228,
+        "completion_tokens": 2355,
+        "total_tokens": 11583,
+        "cost": 0.007876125,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 9001,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.007876125,
+          "upstream_inference_prompt_cost": 0.0034605,
+          "upstream_inference_completions_cost": 0.004415625
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 315,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    },
+    {
+      "chunk": 2,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-01.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-01.txt",
+      "request_id": "gen-1787420756-pzhiqnR30JghdLYaUhT2",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 9228,
+        "completion_tokens": 3189,
+        "total_tokens": 12417,
+        "cost": 0.009439875,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 9001,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.009439875,
+          "upstream_inference_prompt_cost": 0.0034605,
+          "upstream_inference_completions_cost": 0.005979375
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1583,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    },
+    {
+      "chunk": 3,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-02.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-02.txt",
+      "request_id": "gen-1787420787-50usl6gpwOf4xFMJng1o",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 9228,
+        "completion_tokens": 3225,
+        "total_tokens": 12453,
+        "cost": 0.009507375,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 9001,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.009507375,
+          "upstream_inference_prompt_cost": 0.0034605,
+          "upstream_inference_completions_cost": 0.006046875
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1726,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    },
+    {
+      "chunk": 4,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-03.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-03.txt",
+      "request_id": "gen-1787420829-u9Yp3IplXS4o1ffktv6a",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 9228,
+        "completion_tokens": 3113,
+        "total_tokens": 12341,
+        "cost": 0.009297375,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 9001,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.009297375,
+          "upstream_inference_prompt_cost": 0.0034605,
+          "upstream_inference_completions_cost": 0.005836875
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1520,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    },
+    {
+      "chunk": 5,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-04.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-04.txt",
+      "request_id": "gen-1787420854-3b1z7htsb0bFOsKySqJP",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 9228,
+        "completion_tokens": 3434,
+        "total_tokens": 12662,
+        "cost": 0.00989925,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 9001,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.00989925,
+          "upstream_inference_prompt_cost": 0.0034605,
+          "upstream_inference_completions_cost": 0.00643875
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1954,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    },
+    {
+      "chunk": 6,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-05.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-05.txt",
+      "request_id": "gen-1787420882-ah03naADoXjEYNQSealD",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 9228,
+        "completion_tokens": 3751,
+        "total_tokens": 12979,
+        "cost": 0.010493625,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 9001,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.010493625,
+          "upstream_inference_prompt_cost": 0.0034605,
+          "upstream_inference_completions_cost": 0.007033125
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2003,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    },
+    {
+      "chunk": 7,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-06.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-06.txt",
+      "request_id": "gen-1787420917-KmRWENXdjLjXBviClOOG",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 9228,
+        "completion_tokens": 3926,
+        "total_tokens": 13154,
+        "cost": 0.01082175,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 9001,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.01082175,
+          "upstream_inference_prompt_cost": 0.0034605,
+          "upstream_inference_completions_cost": 0.00736125
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2119,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    },
+    {
+      "chunk": 8,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-07.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-07.txt",
+      "request_id": "gen-1787420952-S5tzYPSzqupWfeMyqT1Q",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 9228,
+        "completion_tokens": 3520,
+        "total_tokens": 12748,
+        "cost": 0.0100605,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 9001,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0100605,
+          "upstream_inference_prompt_cost": 0.0034605,
+          "upstream_inference_completions_cost": 0.0066
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1819,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    },
+    {
+      "chunk": 9,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-08.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-08.txt",
+      "request_id": "gen-1787420983-18CDYrUD2RiEjVKmtRxu",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 9228,
+        "completion_tokens": 1845,
+        "total_tokens": 11073,
+        "cost": 0.006919875,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 9001,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.006919875,
+          "upstream_inference_prompt_cost": 0.0034605,
+          "upstream_inference_completions_cost": 0.003459375
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 253,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    },
+    {
+      "chunk": 10,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-09.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-09.txt",
+      "request_id": "gen-1787421002-SgmS8y33qGJbMDy656oc",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 9229,
+        "completion_tokens": 3298,
+        "total_tokens": 12527,
+        "cost": 0.009644625,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 9001,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.009644625,
+          "upstream_inference_prompt_cost": 0.003460875,
+          "upstream_inference_completions_cost": 0.00618375
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1754,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    },
+    {
+      "chunk": 11,
+      "file": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/chunks/audio/e2Nd4iStm7s-10.m4a",
+      "output": "/Users/wangzirui/Woxi mathmatic平替/傅立叶学习体系_视频解析_e2Nd4iStm7s/transcript/gemini-3.7-flash/e2Nd4iStm7s-10.txt",
+      "request_id": "gen-1787421032-85AXP0tzucYpO10ZIhJJ",
+      "model": "google/gemini-3.7-flash",
+      "usage": {
+        "prompt_tokens": 1668,
+        "completion_tokens": 1177,
+        "total_tokens": 2845,
+        "cost": 0.002832375,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 1440,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.002832375,
+          "upstream_inference_prompt_cost": 0.0006255,
+          "upstream_inference_completions_cost": 0.002206875
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 929,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "repetitive_warning": false
+    }
+  ]
+}

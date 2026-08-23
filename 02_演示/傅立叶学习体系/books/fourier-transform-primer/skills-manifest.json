@@ -1,0 +1,242 @@
+[
+  {
+    "id": "01",
+    "slug": "projection-coordinate-reconstruction",
+    "title": "投影—坐标—重建闭环",
+    "source": "02:30–07:38；14:48–19:39；45:32–59:43",
+    "formula": "cₖ = ⟨f,φₖ⟩；f = Σ cₖφₖ",
+    "related": [
+      [
+        "finite-to-function-space",
+        "composes-with"
+      ],
+      [
+        "orthogonal-basis-audit",
+        "depends-on"
+      ],
+      [
+        "fourier-series-analysis-synthesis",
+        "composes-with"
+      ]
+    ]
+  },
+  {
+    "id": "02",
+    "slug": "finite-to-function-space",
+    "title": "从有限维结构迁移到函数空间",
+    "source": "08:52–19:39；24:00–29:56；45:32–59:43",
+    "formula": "向量↔函数，点积↔积分，矩阵↔线性算子",
+    "related": [
+      [
+        "projection-coordinate-reconstruction",
+        "composes-with"
+      ],
+      [
+        "discrete-operator-matrix",
+        "composes-with"
+      ],
+      [
+        "orthogonal-basis-audit",
+        "depends-on"
+      ]
+    ]
+  },
+  {
+    "id": "03",
+    "slug": "discrete-continuous-limit",
+    "title": "离散采样到连续积分的极限桥",
+    "source": "10:18–13:42；50:42–55:48",
+    "formula": "Σ f(xᵢ)g(xᵢ)Δx → ∫ f(x)g(x)dx",
+    "related": [
+      [
+        "finite-to-function-space",
+        "depends-on"
+      ],
+      [
+        "series-to-transform-limit",
+        "composes-with"
+      ]
+    ]
+  },
+  {
+    "id": "04",
+    "slug": "complex-inner-product-audit",
+    "title": "复内积的角色—共轭审计",
+    "source": "17:35–19:39；57:51",
+    "formula": "⟨f,g⟩ = ∫f(t)overline{g(t)}dt",
+    "related": [
+      [
+        "projection-coordinate-reconstruction",
+        "depends-on"
+      ],
+      [
+        "fourier-convention-audit",
+        "composes-with"
+      ]
+    ]
+  },
+  {
+    "id": "05",
+    "slug": "cross-system-equation-isomorphism",
+    "title": "跨物理系统的方程同构识别",
+    "source": "20:19–23:36",
+    "formula": "m x''+c x'+kx=F(t) ↔ L q''+R q'+q/C=V(t)",
+    "related": [
+      [
+        "eigenfunction-operator-algebra",
+        "composes-with"
+      ],
+      [
+        "discrete-operator-matrix",
+        "contrasts-with"
+      ]
+    ]
+  },
+  {
+    "id": "06",
+    "slug": "discrete-operator-matrix",
+    "title": "连续算子的离散矩阵化",
+    "source": "24:00–29:56",
+    "formula": "f'(tᵢ) ≈ (fᵢ₊₁-fᵢ)/h",
+    "related": [
+      [
+        "discrete-continuous-limit",
+        "depends-on"
+      ],
+      [
+        "finite-to-function-space",
+        "composes-with"
+      ],
+      [
+        "eigenfunction-operator-algebra",
+        "composes-with"
+      ]
+    ]
+  },
+  {
+    "id": "07",
+    "slug": "eigenfunction-operator-algebra",
+    "title": "用特征函数代数化线性算子",
+    "source": "28:44–42:35",
+    "formula": "D e^{st}=s e^{st}；P(D)e^{st}=P(s)e^{st}",
+    "related": [
+      [
+        "finite-to-function-space",
+        "depends-on"
+      ],
+      [
+        "discrete-operator-matrix",
+        "composes-with"
+      ],
+      [
+        "complex-exponential-frequency-pair",
+        "composes-with"
+      ]
+    ]
+  },
+  {
+    "id": "08",
+    "slug": "complex-exponential-frequency-pair",
+    "title": "复指数的双表示与正负频率配对",
+    "source": "30:00–32:38；38:05–40:12；43:28–50:42",
+    "formula": "cosωt=(e^{jωt}+e^{-jωt})/2",
+    "related": [
+      [
+        "complex-inner-product-audit",
+        "composes-with"
+      ],
+      [
+        "orthogonal-basis-audit",
+        "composes-with"
+      ],
+      [
+        "fourier-series-analysis-synthesis",
+        "depends-on"
+      ]
+    ]
+  },
+  {
+    "id": "09",
+    "slug": "orthogonal-basis-audit",
+    "title": "正交—完备—归一三项基审计",
+    "source": "01:50–07:38；42:35–47:30",
+    "formula": "⟨φₘ,φₙ⟩=δₘₙ；一般 cₙ=⟨f,φₙ⟩/||φₙ||²",
+    "related": [
+      [
+        "projection-coordinate-reconstruction",
+        "composes-with"
+      ],
+      [
+        "complex-exponential-frequency-pair",
+        "depends-on"
+      ],
+      [
+        "fourier-series-analysis-synthesis",
+        "composes-with"
+      ]
+    ]
+  },
+  {
+    "id": "10",
+    "slug": "fourier-series-analysis-synthesis",
+    "title": "傅立叶级数的分析—综合双流程",
+    "source": "45:32–50:42",
+    "formula": "cₙ=(1/T)∫_T f(t)e^{-jnω₀t}dt；f(t)=Σcₙe^{jnω₀t}",
+    "related": [
+      [
+        "projection-coordinate-reconstruction",
+        "depends-on"
+      ],
+      [
+        "complex-exponential-frequency-pair",
+        "depends-on"
+      ],
+      [
+        "orthogonal-basis-audit",
+        "depends-on"
+      ],
+      [
+        "series-to-transform-limit",
+        "composes-with"
+      ]
+    ]
+  },
+  {
+    "id": "11",
+    "slug": "series-to-transform-limit",
+    "title": "周期拉伸构造傅立叶变换",
+    "source": "50:42–57:51",
+    "formula": "T→∞：f₀→df，nf₀→f，Σ·f₀→∫·df",
+    "related": [
+      [
+        "discrete-continuous-limit",
+        "depends-on"
+      ],
+      [
+        "fourier-series-analysis-synthesis",
+        "depends-on"
+      ],
+      [
+        "fourier-convention-audit",
+        "composes-with"
+      ]
+    ]
+  },
+  {
+    "id": "12",
+    "slug": "fourier-convention-audit",
+    "title": "傅立叶约定的符号与归一化审计",
+    "source": "30:00；45:32；55:48–57:51",
+    "formula": "F(ω)=∫f(t)e^{-jωt}dt；f(t)=(1/2π)∫F(ω)e^{jωt}dω",
+    "related": [
+      [
+        "complex-inner-product-audit",
+        "depends-on"
+      ],
+      [
+        "series-to-transform-limit",
+        "depends-on"
+      ]
+    ]
+  }
+]

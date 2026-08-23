@@ -1,0 +1,47 @@
+{
+  "skill": "discrete-operator-matrix",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "discrete-operator-matrix",
+      "reason": "用户直接询问如何把导数表示成矩阵，精确匹配有限差分算子矩阵化。",
+      "if_triggered_action": "选定网格和输入输出位置，逐行构造含 1/h 缩放的差分矩阵，明确端点规则，并用已知光滑函数比较离散导数与解析导数误差。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "discrete-operator-matrix",
+      "reason": "差分矩阵的边界处理是该 skill 明确覆盖的核心问题。",
+      "if_triggered_action": "先声明周期、Dirichlet、Neumann 或单边差分等边界条件，再据此构造首末行，并用边界一致的已知函数验证结果。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "discrete-operator-matrix",
+      "reason": "用户点名连续算子离散矩阵化并要求可运行的离线实验。",
+      "if_triggered_action": "制作可调网格的离线实验，展示差分矩阵每行如何组合邻点、网格缩小时误差如何变化，以及不同端点规则造成的差异。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询不涉及连续算子、离散网格或矩阵表示。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "eigenfunction-operator-algebra",
+      "reason": "用户明确要求只解释另一 skill 的适用场景，本 skill 不应抢占路由。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "请求仅限中文定义并排除推导和实验，属于本 skill 描述明确排除的纯定义查询。",
+      "if_triggered_action": null
+    }
+  ]
+}

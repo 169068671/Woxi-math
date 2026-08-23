@@ -1,0 +1,47 @@
+{
+  "skill": "fourier-convention-audit",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "fourier-convention-audit",
+      "reason": "用户追问傅立叶公式中的 2π，直接涉及频率变量、指数核和正逆变换归一化约定。",
+      "if_triggered_action": "列出当前变换对的频率变量、指数核、正负号与常数，再通过 ω=2πf 和 dω=2πdf 做完整变量替换，并合成正逆变换核验。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "fourier-convention-audit",
+      "reason": "比较两本教材的傅立叶定义不能只看单个常数，需要审计整套 f/ω、2π、符号和正逆常数，正中该 skill。",
+      "if_triggered_action": "为两套定义建立四栏对照表，统一频率变量并连微元换元，检查正逆变换常数是否配对以及复合后能否恢复原函数，再判断它们是否只是等价约定。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "fourier-convention-audit",
+      "reason": "用户点名要求用离线实验讲清傅立叶约定和归一化审计，与该 skill 的执行目标完全一致。",
+      "if_triggered_action": "制作离线对照实验，在 Hz 与 rad/s 两套变换对间切换，联动显示核函数、微元、频谱横轴和归一化常数，并用数值正逆变换验证重建一致性。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询不涉及傅立叶定义、频率变量或归一化约定。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "projection-coordinate-reconstruction",
+      "reason": "用户明确只解释另一个 skill 的适用场景，当前傅立叶约定审计不应触发。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "请求仅为中文定义并明确不要推导或实验，属于该 skill 明确排除的纯定义查询。",
+      "if_triggered_action": null
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "skill": "discrete-continuous-limit",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "discrete-continuous-limit",
+      "reason": "求和如何在极限中变为积分是该 skill 的直接触发问题。",
+      "if_triggered_action": "写出带网格间隔的离散和，追踪网格加密时的间隔、索引与范围，再检查量纲和积分极限。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "discrete-continuous-limit",
+      "reason": "采样变密后数值反而变大，通常表明离散和漏了网格宽度，正是该 skill 的尺度审计场景。",
+      "if_triggered_action": "检查离散公式是否包含 Δx 或 Δf，比较不同网格密度的加权与未加权结果，并用积分值验证极限。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "discrete-continuous-limit",
+      "reason": "用户点名该单元并要求离线数值实验，符合该 skill 的可计算验证场景。",
+      "if_triggered_action": "构造可调整网格数的黎曼和实验，同时显示采样点、矩形面积、Δx 与相对积分的误差。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询与离散求和、网格极限或积分无关。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "complex-inner-product-audit",
+      "reason": "用户明确要求另一个关于复内积与共轭的 skill，本 skill 不应触发。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "请求仅为中文定义，明确排除推导和实验，属于 skill 说明中排除的纯定义场景。",
+      "if_triggered_action": null
+    }
+  ]
+}

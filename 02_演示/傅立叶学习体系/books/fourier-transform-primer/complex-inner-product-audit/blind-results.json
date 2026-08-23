@@ -1,0 +1,47 @@
+{
+  "skill": "complex-inner-product-audit",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "complex-inner-product-audit",
+      "reason": "该 skill 明确把“傅立叶变换为什么有负号”列为语言信号，问题涉及分析内积中的共轭。",
+      "if_triggered_action": "先标记公式是分析还是综合，写明内积共轭约定，用自内积正定性检查，再核对正逆变换指数符号是否配套。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "complex-inner-product-audit",
+      "reason": "复内积共轭放在哪一槽正是该 skill 的核心约定审计问题。",
+      "if_triggered_action": "陈述当前教材采用的线性槽约定，验证 ⟨z,z⟩ 为非负实数，并检查后续投影与正逆变换是否一致。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "complex-inner-product-audit",
+      "reason": "用户点名复内积共轭审计并要求离线实验，属于该 skill 的教学验证场景。",
+      "if_triggered_action": "用 z=1+i 比较 z·z 和 z·conj(z)，再用一组复指数基对比投影时取共轭与综合时不取共轭的结果。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询不涉及复内积、共轭或傅立叶符号约定。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "cross-system-equation-isomorphism",
+      "reason": "用户明确点名跨系统方程同构 skill，本 skill 与所询适用场景不匹配。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "用户只要求中文定义，明确不要推导或实验，符合该 skill 排除的纯定义情形。",
+      "if_triggered_action": null
+    }
+  ]
+}

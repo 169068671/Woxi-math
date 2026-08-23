@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>方向导数：计算五、图五与梯度详细解释</title>
+  <style>
+    :root{--paper:#f7f3ea;--card:#fffdf8;--ink:#14233d;--muted:#657087;--line:#d9d5ca;--blue:#2878c8;--pale:#b9daf5;--orange:#f15a24;--green:#16835f;--navy:#10295b;--warm:#fff2e8;--shadow:0 16px 42px rgba(32,44,64,.08)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7}.page{width:min(1180px,calc(100% - 28px));margin:auto;padding:22px 0 72px}.topnav{display:flex;justify-content:space-between;gap:16px;margin-bottom:24px}.topnav a,.jump a,.back-link{color:var(--blue);font-weight:800;text-decoration:none}.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:end;padding:18px 0 28px}.kicker{color:var(--orange);font-weight:900;letter-spacing:.08em;font-size:13px}.hero h1{font-size:clamp(34px,5.4vw,64px);line-height:1.08;letter-spacing:-.045em;margin:8px 0 14px}.hero p{font-size:18px;color:var(--muted);margin:0;max-width:650px}.route{background:var(--navy);color:#fff;border-radius:18px;padding:20px 22px;box-shadow:var(--shadow)}.route b{display:block;margin-bottom:8px}.route ol{margin:0;padding-left:21px;color:#d9e3f5}.jump{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px}.jump a{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 13px}.section{margin:26px 0 42px;scroll-margin-top:14px}.section-head{display:grid;grid-template-columns:100px 1fr;gap:20px;align-items:start;margin-bottom:16px}.number{font:800 54px/1 Georgia,"Songti SC",serif;color:var(--pale)}.section h2{font-size:clamp(27px,4vw,42px);line-height:1.2;margin:0 0 7px;letter-spacing:-.025em}.section-head p{color:var(--muted);margin:0}.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;margin:16px 0}.panel-title{padding:17px 22px;border-bottom:1px solid var(--line);font-weight:900}.split{display:grid;grid-template-columns:1fr 1fr}.split>*{padding:24px}.split>*+*{border-left:1px solid var(--line)}.step-list{display:grid;gap:12px;padding:22px}.step{display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:start}.step-no{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:#fff;font-weight:900}.step h3{margin:2px 0 4px;font-size:18px}.step p{margin:0;color:var(--muted)}.math{font:18px/1.9 Georgia,"Songti SC",serif;background:#f2f7fc;border-left:4px solid var(--blue);padding:12px 15px;margin:9px 0;border-radius:0 10px 10px 0;overflow:auto}.math strong{color:var(--orange)}.math .green{color:var(--green)}.cancel{color:var(--muted);text-decoration:line-through}.why{background:var(--warm);border:1px solid #efc7aa;border-radius:12px;padding:13px 15px}.why b{color:#b94218}.human{border-top:1px dashed var(--line);padding-top:13px;margin-top:13px}.human b{color:var(--blue)}.controls{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:#f2f7fc;padding:16px 19px;border-bottom:1px solid var(--line)}.controls label{font-weight:900}.controls input[type=range]{width:100%;accent-color:var(--orange)}.value{font:800 18px Georgia,serif;color:var(--orange);min-width:92px;text-align:right}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.metric{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px}.metric small{display:block;color:var(--muted)}.metric b{font:800 15px Georgia,serif}.diagram{background:linear-gradient(145deg,#fff 0%,#f6faff 100%)}svg{width:100%;height:auto;display:block}.axis{stroke:var(--blue);stroke-width:2}.guide{stroke:#aab4c4;stroke-width:1.5;stroke-dasharray:6 5}.secant{stroke:var(--ink);stroke-width:4}.tangent{stroke:var(--green);stroke-width:4}.run{stroke:var(--blue);stroke-width:3}.rise{stroke:var(--orange);stroke-width:3}.vector{stroke:var(--orange);stroke-width:4}.gradient{stroke:var(--green);stroke-width:5}.label{font:700 14px -apple-system,"PingFang SC",sans-serif;fill:var(--ink)}.small{font:600 12px -apple-system,"PingFang SC",sans-serif;fill:var(--muted)}.blue{fill:var(--blue)}.orange{fill:var(--orange)}.green{fill:var(--green)}.caption{font-size:13px;color:var(--muted);text-align:center;margin:8px 0 0}.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-top:10px}.key{display:inline-flex;align-items:center;gap:6px}.swatch{width:22px;height:4px;background:var(--ink)}.swatch.green{background:var(--green)}.swatch.orange{background:var(--orange)}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}thead{background:#f2f7fc}.current-row{background:#fff5ec}.callout{background:#edf8f3;border:1px solid #a6d4c3;border-radius:14px;padding:16px 18px;margin-top:14px}.callout h3{color:var(--green);margin:0 0 5px}.callout p{margin:0}.angle-buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.angle-buttons button{border:1px solid #aac7df;background:#fff;color:var(--blue);border-radius:999px;padding:7px 12px;font-weight:800;cursor:pointer}.angle-buttons button:active{transform:scale(.98)}.compare{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.compare>div{border-top:3px solid var(--line);padding:10px 4px}.compare b{display:block}.footer-note{background:var(--navy);color:#fff;border-radius:18px;padding:22px;text-align:center;font-size:20px;font-weight:800}.footer-note strong{color:#66ddb0}
+    @media(max-width:820px){.hero,.split{grid-template-columns:1fr}.hero{gap:16px}.split>*+*{border-left:0;border-top:1px solid var(--line)}.metrics{grid-template-columns:1fr 1fr}.section-head{grid-template-columns:65px 1fr}.number{font-size:40px}}@media(max-width:520px){.page{width:calc(100% - 14px);padding-top:12px}.topnav{font-size:13px}.hero h1{font-size:34px}.split>*{padding:18px 14px}.metrics,.compare{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.value{text-align:left}.math{font-size:16px}.section-head{grid-template-columns:1fr;gap:3px}.number{font-size:28px}.jump a{font-size:13px}}
+  </style>
+</head>
+<body><main class="page">
+  <nav class="topnav"><a href="方向导数本次数值代入详解.html#calculation-5">← 返回主讲页的计算 5</a><a href="方向导数符号图片示例.html">符号图片示例总页 →</a></nav>
+
+  <header class="hero">
+    <div><div class="kicker">只补讲你没弄明白的地方</div><h1>计算五、图五<br>与梯度详细解释</h1><p>先把平均坡度公式完整推出来，再看割线为什么逼近切线；最后从偏导数开始，一步一步算出梯度与点积。</p></div>
+    <aside class="route"><b>本页学习顺序</b><ol><li>先找出计算五中被省略的代数步骤</li><li>再把图五的每一条线与算式对上</li><li>最后从零解释梯度和点积</li></ol></aside>
+  </header>
+
+  <nav class="jump" aria-label="页内导航"><a href="#formula-source">式子从哪里来</a><a href="#calculation-5">计算五逐步算</a><a href="#figure-5">图五逐项认</a><a href="#gradient">梯度从零算</a><a href="#relation">两种算法为什么相同</a></nav>
+
+  <section class="section" id="formula-source">
+    <div class="section-head"><div class="number">01</div><div><h2>先补上原页省略的一大段</h2><p>原页直接写出“平均坡度 = 1/√2 + h/4”。下面把它从函数定义一步步推出来。</p></div></div>
+    <div class="panel"><div class="panel-title">固定不变的四个对象</div><div class="split">
+      <div><div class="math">函数：f(x,y)=(x²+y²)/4<br>起点：P=(1,1)</div><p>函数和起点在整个计算五里都不变。</p></div>
+      <div><div class="math">方向：u=(1/√2,1/√2)<br>步长：h&gt;0，随后让 h→0</div><p>u 也不变；只有 h 一次次缩小。</p></div>
+    </div></div>
+    <div class="panel"><div class="panel-title">从新位置一直算到平均坡度</div><div class="step-list">
+      <div class="step"><div class="step-no">1</div><div><h3>写出走完 h 后的新位置</h3><div class="math">P+hu=(1,1)+h(1/√2,1/√2)<br>=(1+h/√2, 1+h/√2)</div><p>两个坐标都增加 h/√2。</p></div></div>
+      <div class="step"><div class="step-no">2</div><div><h3>把新位置代入函数</h3><div class="math">f(P+hu)<br>=[(1+h/√2)²+(1+h/√2)²]/4<br>=2(1+h/√2)²/4<br>=(1+h/√2)²/2</div></div></div>
+      <div class="step"><div class="step-no">3</div><div><h3>展开平方，不能跳过中间项</h3><div class="math">(1+h/√2)²<br>=1²+2·1·h/√2+(h/√2)²<br>=1+√2h+h²/2</div><div class="why"><b>最容易漏掉：</b>(a+b)²=a²+2ab+b²，中间的 2ab 不能省略。</div></div></div>
+      <div class="step"><div class="step-no">4</div><div><h3>得到新高度</h3><div class="math">f(P+hu)=(1+√2h+h²/2)/2<br>=1/2+h/√2+h²/4</div></div></div>
+      <div class="step"><div class="step-no">5</div><div><h3>新高度减旧高度</h3><div class="math">Δf=f(P+hu)−f(P)<br>=(1/2+h/√2+h²/4)−1/2<br>=h/√2+h²/4</div><p>旧高度 f(P)=1/2，减掉后只剩由这一步移动造成的高度变化。</p></div></div>
+      <div class="step"><div class="step-no">6</div><div><h3>除以实际距离 h</h3><div class="math">平均坡度=Δf/h<br>=(h/√2+h²/4)/h<br>=<span class="cancel">h</span>/(√2<span class="cancel">h</span>)+<span class="cancel">h</span>²/(4<span class="cancel">h</span>)<br>=<strong>1/√2+h/4</strong>　（h≠0）</div><p class="human"><b>读成人话：</b>当前小路的平均坡度由两部分组成：固定的 1/√2，加上一个随 h 缩小的误差项 h/4。</p></div></div>
+    </div></div>
+  </section>
+
+  <section class="section" id="calculation-5">
+    <div class="section-head"><div class="number">02</div><div><h2>计算五：真正变化的是误差项 h/4</h2><p>拖动 h。观察 h 缩小时，新位置、平均坡度与 0.70710678 的差距怎样一起缩小。</p></div></div>
+    <div class="panel">
+      <div class="controls"><div><label for="hSlider">主动选择步长 h</label><input id="hSlider" type="range" min="0.001" max="0.5" step="0.001" value="0.0112" aria-describedby="hExplain"></div><output class="value" id="hValue">h=0.0112</output></div>
+      <div class="split"><div>
+        <div class="metrics"><div class="metric"><small>h/4 误差项</small><b id="errorValue">0.00280000</b></div><div class="metric"><small>新高度</small><b id="newHeight">0.50795096</b></div><div class="metric"><small>平均坡度</small><b id="avgValue">0.70990678</b></div><div class="metric"><small>瞬时坡度</small><b>0.70710678</b></div></div>
+        <div class="math" id="dynamicFormula">平均坡度<br>=1/√2+0.0112/4<br>=0.70710678+0.00280000<br>=<strong>0.70990678</strong></div>
+        <p id="hExplain" class="human"><b>关键：</b>h 没有直接变成 0。我们只观察 h 越来越小时，h/4 越来越接近 0。</p>
+      </div><div class="diagram">
+        <svg id="secantSvg" viewBox="0 0 600 350" role="img" aria-label="割线斜率逐渐接近切线斜率的动态图"><defs><marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#2878c8"/></marker><marker id="arrowOrange" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#f15a24"/></marker></defs><line class="axis" x1="55" y1="305" x2="550" y2="305" marker-end="url(#arrowBlue)"/><line class="axis" x1="80" y1="325" x2="80" y2="30" marker-end="url(#arrowBlue)"/><text class="label blue" x="455" y="330">行走距离 s</text><text class="label blue" x="22" y="34">高度 g(s)</text><line class="guide" x1="95" y1="270" x2="465" y2="270"/><line class="run" x1="95" y1="270" x2="465" y2="270"/><line class="rise" x1="465" y1="270" x2="465" id="riseLine" y2="137"/><line class="secant" x1="95" y1="270" x2="465" id="secantLine" y2="137"/><line class="tangent" x1="95" y1="270" x2="465" id="tangentLine" y2="142"/><circle cx="95" cy="270" r="8" fill="#14233d"/><circle cx="465" id="endPoint" cy="137" r="8" fill="#f15a24"/><text class="label" x="65" y="295">起点</text><text class="label orange" x="432" id="endLabel" y="120">终点</text><text class="label blue" x="245" y="296" id="runLabel">横向：h=0.0112</text><text class="label orange" x="320" y="236" id="riseLabel">纵向：Δf</text><text class="small" x="165" y="78">黑线：当前 h 的割线</text><text class="small green" x="165" y="99">绿线：h→0 后的切线</text></svg>
+        <p class="caption">为了看清斜率，横向宽度作了示意放大；标签中的数值才是真实值。</p>
+      </div></div>
+    </div>
+    <div class="panel"><div class="panel-title">四次观察放在一起</div><div style="overflow:auto"><table><thead><tr><th>步长 h</th><th>固定部分 1/√2</th><th>误差项 h/4</th><th>平均坡度</th><th>离瞬时坡度还差</th></tr></thead><tbody><tr><td>0.5</td><td>0.70710678</td><td>0.12500000</td><td>0.83210678</td><td>0.12500000</td></tr><tr><td>0.1</td><td>0.70710678</td><td>0.02500000</td><td>0.73210678</td><td>0.02500000</td></tr><tr class="current-row"><td>0.0112</td><td>0.70710678</td><td>0.00280000</td><td>0.70990678</td><td>0.00280000</td></tr><tr><td>越来越接近 0</td><td>0.70710678</td><td>越来越接近 0</td><td>越来越接近 0.70710678</td><td>越来越接近 0</td></tr></tbody></table></div></div>
+    <div class="callout"><h3>为什么不能把 h 直接写成 0？</h3><p>原始式子是 [f(P+hu)−f(P)]/h。直接令 h=0 会得到 0/0，除法没有意义。正确做法是始终让 h 保持非零，只让它无限接近 0；约分后再观察结果趋近哪里。</p></div>
+  </section>
+
+  <section class="section" id="figure-5">
+    <div class="section-head"><div class="number">03</div><div><h2>图五：每一条线到底对应什么</h2><p>图五不是在画四条不同道路，而是在同一点、同一方向上，用四种大小不同的观察窗口测坡度。</p></div></div>
+    <div class="panel"><div class="split"><div>
+      <svg viewBox="0 0 560 350" role="img" aria-label="割线与切线各部分说明"><defs><marker id="f5a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#f15a24"/></marker></defs><path d="M48 300Q215 255 510 58" fill="none" stroke="#b9daf5" stroke-width="6"/><circle cx="112" cy="270" r="8" fill="#14233d"/><circle cx="442" cy="112" r="8" fill="#f15a24"/><line class="secant" x1="112" y1="270" x2="442" y2="112"/><line class="tangent" x1="58" y1="299" x2="502" y2="92"/><line class="run" x1="112" y1="270" x2="442" y2="270"/><line class="rise" x1="442" y1="270" x2="442" y2="112"/><text class="label" x="77" y="295">A：起点</text><text class="label orange" x="421" y="88">B：h 后的点</text><text class="label blue" x="235" y="297">横向 h</text><text class="label orange" x="454" y="202">纵向 Δf</text><text class="label" x="235" y="170">割线 AB</text><text class="label green" x="260" y="105">A 点切线</text></svg>
+      <p class="caption">这里把沿 u 的二维移动压成一条横轴 s；纵轴只记录函数高度 g(s)=f(P+su)。</p>
+    </div><div>
+      <div class="step"><div class="step-no">A</div><div><h3>黑点 A</h3><p>永远是 s=0，也就是原来的 P 点，高度是 f(P)=0.5。</p></div></div>
+      <div class="step"><div class="step-no">B</div><div><h3>橙点 B</h3><p>是走了 h 后的 P+hu。h 越小，B 越靠近 A。</p></div></div>
+      <div class="step"><div class="step-no">—</div><div><h3>黑色割线</h3><p>连接 A、B 两点。它的斜率 Δf/h 是这一小段的平均坡度。</p></div></div>
+      <div class="step"><div class="step-no">—</div><div><h3>绿色切线</h3><p>只接触 A 附近的瞬时方向。它的斜率 0.7071 是方向导数。</p></div></div>
+      <div class="step"><div class="step-no">→</div><div><h3>B 向 A 靠近</h3><p>割线跟着旋转并逼近切线；它们的斜率也从 0.8321、0.7321、0.7099 逼近 0.7071。</p></div></div>
+    </div></div></div>
+  </section>
+
+  <section class="section" id="gradient">
+    <div class="section-head"><div class="number">04</div><div><h2>梯度从零开始算：先分别问 x 和 y</h2><p>梯度不是凭空得到的 `(0.5,0.5)`。它由两个偏导数组成：只动 x 时的瞬时变化率，以及只动 y 时的瞬时变化率。</p></div></div>
+    <div class="panel"><div class="step-list">
+      <div class="step"><div class="step-no">1</div><div><h3>对 x 求偏导：暂时把 y 当常数</h3><div class="math">f(x,y)=(x²+y²)/4=x²/4+y²/4<br>∂f/∂x=2x/4+0=<strong>x/2</strong></div><p>y²/4 对 x 来说不变化，所以它的 x 方向变化率是 0。</p></div></div>
+      <div class="step"><div class="step-no">2</div><div><h3>对 y 求偏导：暂时把 x 当常数</h3><div class="math">∂f/∂y=0+2y/4=<strong>y/2</strong></div></div></div>
+      <div class="step"><div class="step-no">3</div><div><h3>把两个偏导排成一个向量</h3><div class="math">∇f(x,y)=(∂f/∂x, ∂f/∂y)<br>=(x/2,y/2)</div><p>符号 ∇ 读作 nabla；∇f 读作“f 的梯度”。</p></div></div>
+      <div class="step"><div class="step-no">4</div><div><h3>代入 P=(1,1)</h3><div class="math">∇f(P)=∇f(1,1)<br>=(1/2,1/2)=<strong>(0.5,0.5)</strong></div><p class="human"><b>读成人话：</b>在 P 点，只向 x 正方向走一个极小单位，高度约以 0.5 的速率增加；只向 y 正方向走，也约以 0.5 的速率增加。</p></div></div>
+    </div></div>
+
+    <div class="panel"><div class="panel-title">点积：把 x、y 两个方向的贡献合起来</div><div class="split"><div>
+      <div class="math">∇f(P)·u<br>=(0.5,0.5)·(1/√2,1/√2)<br>=0.5×1/√2+0.5×1/√2<br>=1/(2√2)+1/(2√2)<br>=1/√2<br>≈<span class="green"><strong>0.70710678</strong></span></div>
+      <div class="why"><b>点积不是普通乘法：</b>先让对应位置相乘，再把结果相加。这里是“x 方向贡献 + y 方向贡献”。</div>
+    </div><div class="diagram">
+      <svg id="vectorSvg" viewBox="0 0 560 380" role="img" aria-label="梯度向量与方向向量的关系"><defs><marker id="gradArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#16835f"/></marker><marker id="uArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#f15a24"/></marker></defs><line class="axis" x1="70" y1="310" x2="510" y2="310"/><line class="axis" x1="95" y1="345" x2="95" y2="35"/><circle cx="190" cy="245" r="7" fill="#14233d"/><text class="label" x="160" y="273">P=(1,1)</text><line id="gradLine" class="gradient" x1="190" y1="245" x2="390" y2="75" marker-end="url(#gradArrow)"/><line id="uLine" class="vector" x1="190" y1="245" x2="390" y2="75" marker-end="url(#uArrow)"/><text class="label green" x="344" y="58">∇f(P)</text><text id="uText" class="label orange" x="400" y="94">u，45°</text><path id="angleArc" d="M235 245 A45 45 0 0 0 222 213" fill="none" stroke="#f15a24" stroke-width="2"/><text id="angleText" class="small orange" x="238" y="220">夹角 0°</text></svg>
+      <p class="caption">本例中，橙色 u 与绿色梯度方向完全相同，所以 u 恰好指向最陡上升方向。</p>
+    </div></div>
+      <div class="controls"><div><label for="thetaSlider">改变方向角 θ，看看点积怎样变化</label><input id="thetaSlider" type="range" min="0" max="360" step="1" value="45"></div><output class="value" id="thetaValue">θ=45°</output></div>
+      <div style="padding:0 22px 22px"><div class="metrics"><div class="metric"><small>u 的 x 分量</small><b id="uxValue">0.7071</b></div><div class="metric"><small>u 的 y 分量</small><b id="uyValue">0.7071</b></div><div class="metric"><small>与梯度夹角</small><b id="alphaValue">0°</b></div><div class="metric"><small>∇f(P)·u</small><b id="dotValue">0.7071</b></div></div><div class="math" id="dotFormula">0.5×0.7071+0.5×0.7071=<strong>0.7071</strong></div><div class="angle-buttons"><button type="button" data-angle="45">45° 同向</button><button type="button" data-angle="135">135° 垂直</button><button type="button" data-angle="225">225° 反向</button><button type="button" data-angle="0">0° 只向 x</button></div>
+      <div class="compare"><div><b>同向：最大正值</b>方向导数是 +0.7071。</div><div><b>垂直：等于 0</b>短距离内没有一阶高度变化。</div><div><b>反向：负值</b>沿最陡下降方向，高度降低。</div></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="relation">
+    <div class="section-head"><div class="number">05</div><div><h2>为什么极限算法与梯度算法得到同一个数</h2><p>它们不是两种互不相关的技巧，而是在描述同一件事。</p></div></div>
+    <div class="panel"><div class="split"><div><h3>计算五：直接测一小段路</h3><div class="math">平均坡度=1/√2+h/4<br>h→0 后：<strong>1/√2</strong></div><p>这是从“新高度−旧高度”出发，逐步缩小观察距离。</p></div><div><h3>梯度法：合成两个坐标方向的贡献</h3><div class="math">∇f(P)·u<br>=(0.5,0.5)·(1/√2,1/√2)<br>=<strong>1/√2</strong></div><p>这是把 x、y 方向的瞬时变化率投影到 u 方向。</p></div></div></div>
+    <div class="footer-note">两条路都在问：从 P 出发，沿 u 方向走<strong>无限小的一步</strong>，高度以多快的速度改变？答案都是 1/√2≈0.7071。</div>
+  </section>
+
+  <p style="text-align:center;margin-top:30px"><a class="back-link" href="方向导数本次数值代入详解.html#calculation-5">← 已经弄明白，返回主讲页继续看</a></p>
+</main>
+<script>
+  const root2 = Math.sqrt(2);
+  const instant = 1 / root2;
+  const hSlider = document.getElementById('hSlider');
+  const hValue = document.getElementById('hValue');
+  const errorValue = document.getElementById('errorValue');
+  const newHeight = document.getElementById('newHeight');
+  const avgValue = document.getElementById('avgValue');
+  const dynamicFormula = document.getElementById('dynamicFormula');
+  const secantLine = document.getElementById('secantLine');
+  const endPoint = document.getElementById('endPoint');
+  const riseLine = document.getElementById('riseLine');
+  const runLabel = document.getElementById('runLabel');
+  const riseLabel = document.getElementById('riseLabel');
+  const endLabel = document.getElementById('endLabel');
+
+  function formatH(h){return h < .01 ? h.toFixed(3) : h.toFixed(4).replace(/0+$/,'').replace(/\.$/,'')}
+  function updateH(){
+    const h = Number(hSlider.value);
+    const error = h / 4;
+    const avg = instant + error;
+    const deltaF = h * avg;
+    const height = .5 + deltaF;
+    hValue.textContent = `h=${formatH(h)}`;
+    errorValue.textContent = error.toFixed(8);
+    newHeight.textContent = height.toFixed(8);
+    avgValue.textContent = avg.toFixed(8);
+    dynamicFormula.innerHTML = `平均坡度<br>=1/√2+${formatH(h)}/4<br>=${instant.toFixed(8)}+${error.toFixed(8)}<br>=<strong>${avg.toFixed(8)}</strong>`;
+    const y = 270 - avg * 180;
+    secantLine.setAttribute('y2', y.toFixed(1));
+    endPoint.setAttribute('cy', y.toFixed(1));
+    riseLine.setAttribute('y2', y.toFixed(1));
+    endLabel.setAttribute('y', (y - 17).toFixed(1));
+    runLabel.textContent = `横向：h=${formatH(h)}`;
+    riseLabel.textContent = `纵向：Δf=${deltaF.toFixed(8)}`;
+  }
+  hSlider.addEventListener('input', updateH);
+  updateH();
+
+  const thetaSlider = document.getElementById('thetaSlider');
+  const thetaValue = document.getElementById('thetaValue');
+  const uxValue = document.getElementById('uxValue');
+  const uyValue = document.getElementById('uyValue');
+  const alphaValue = document.getElementById('alphaValue');
+  const dotValue = document.getElementById('dotValue');
+  const dotFormula = document.getElementById('dotFormula');
+  const uLine = document.getElementById('uLine');
+  const uText = document.getElementById('uText');
+  const angleText = document.getElementById('angleText');
+
+  function clean(n){return Math.abs(n) < 0.00005 ? 0 : n}
+  function updateTheta(){
+    const theta = Number(thetaSlider.value);
+    const rad = theta * Math.PI / 180;
+    const ux = clean(Math.cos(rad));
+    const uy = clean(Math.sin(rad));
+    const dot = clean(.5 * ux + .5 * uy);
+    let alpha = Math.abs(((theta - 45 + 540) % 360) - 180);
+    thetaValue.textContent = `θ=${theta}°`;
+    uxValue.textContent = ux.toFixed(4);
+    uyValue.textContent = uy.toFixed(4);
+    alphaValue.textContent = `${alpha.toFixed(0)}°`;
+    dotValue.textContent = dot.toFixed(4);
+    dotFormula.innerHTML = `0.5×(${ux.toFixed(4)})+0.5×(${uy.toFixed(4)})=<strong>${dot.toFixed(4)}</strong>`;
+    const length = 220;
+    const x2 = 190 + length * ux;
+    const y2 = 245 - length * uy;
+    uLine.setAttribute('x2', x2.toFixed(1));
+    uLine.setAttribute('y2', y2.toFixed(1));
+    uText.setAttribute('x', Math.max(105,Math.min(485,x2+9)).toFixed(1));
+    uText.setAttribute('y', Math.max(35,Math.min(345,y2-8)).toFixed(1));
+    uText.textContent = `u，${theta}°`;
+    angleText.textContent = `夹角 ${alpha.toFixed(0)}°`;
+  }
+  thetaSlider.addEventListener('input', updateTheta);
+  document.querySelectorAll('[data-angle]').forEach(button=>button.addEventListener('click',()=>{thetaSlider.value=button.dataset.angle;updateTheta()}));
+  updateTheta();
+</script>
+</body>
+</html>

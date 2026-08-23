@@ -1,0 +1,47 @@
+{
+  "skill": "orthogonal-basis-audit",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "orthogonal-basis-audit",
+      "reason": "用户直接质疑一组函数是否构成基，必须区分并核验正交性、完备性与归一化，正中该 skill 的专属触发范围。",
+      "if_triggered_action": "先固定函数空间、区间与内积，再分别计算正交关系和范数，最后用重建误差或完备性条件判断它是否真能作为目标空间的基。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "orthogonal-basis-audit",
+      "reason": "“为什么还要除以 T”是该 skill 明列的语言信号，问题指向非单位范数基的坐标尺度与归一化。",
+      "if_triggered_action": "写明整周期内积，计算复指数基的范数平方为 T，并由一般投影公式说明系数为何需要除以 T，同时核查所用区间和归一化约定。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "orthogonal-basis-audit",
+      "reason": "用户明确要求用实验讲解该方法论本身，且实验需要把正交、完备、归一三个不可互换的条件分别可视化验证。",
+      "if_triggered_action": "设计离线数值实验：展示内积矩阵检验正交、改变基函数范数观察坐标尺度、逐步增加基函数并绘制重建误差检验完备性，再加入失败反例。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询与函数基、内积、归一化或数学推导审计无关。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "fourier-series-analysis-synthesis",
+      "reason": "用户明确指定只解释另一个 skill 的适用场景；当前 skill 即使与其组合使用，也不应抢占调用。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "用户只要中文定义并明确排除推导和实验，属于该 skill 边界中排除的纯粹查定义场景。",
+      "if_triggered_action": null
+    }
+  ]
+}

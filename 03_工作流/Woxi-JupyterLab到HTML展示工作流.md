@@ -137,6 +137,31 @@ HTML 会生成在笔记本所在目录。图形和输出会嵌入页面，不依
 - 计算或 SVG 图形结果正常显示。
 - 刷新页面后仍能看到结果。
 
+### 9. 用户关掉浏览页后收尾
+
+用户说「可以关了」、关掉结果页、或明确看完后，必须同时关掉 JupyterLab 和这次打开的相关网页。不要退出整个浏览器，也不要删除 `.ipynb` / `.html`。
+
+停止本库这次启动的 JupyterLab（含 Woxi 内核），不要留在后台：
+
+```bash
+pkill -INT -f 'jupyterlab --notebook-dir=.*/Woxi mathmatic平替' || true
+```
+
+只关闭相关网页：`localhost:8888` 的 JupyterLab 标签、本次 `主题名结果.html` 标签。Chrome 可用：
+
+```bash
+osascript -e 'tell application "Google Chrome"
+  repeat with w in windows
+    repeat with t in reverse of (tabs of w)
+      set u to URL of t
+      if u contains "localhost:8888" or u contains "绘图结果.html" then close t
+    end repeat
+  end repeat
+end tell'
+```
+
+笔记本和离线 HTML 留在 `02_演示/主题名/`。下次直接打开 HTML 即可，不必再开 JupyterLab。
+
 ## 固定交付标准
 
 一次完整交付必须同时具备：
@@ -147,6 +172,7 @@ HTML 会生成在笔记本所在目录。图形和输出会嵌入页面，不依
 - [ ] 已生成同目录离线 `.html`。
 - [ ] HTML 已在浏览器实际打开检查。
 - [ ] 向用户提供可点击的 HTML 路径；如需继续编辑，再同时提供 `.ipynb` 路径。
+- [ ] 用户关掉浏览页后：JupyterLab 已停止，相关标签已关；结果文件仍保留。
 
 ## 常见问题
 
@@ -157,4 +183,5 @@ HTML 会生成在笔记本所在目录。图形和输出会嵌入页面，不依
 | HTML 中没有最新结果 | 先执行第 6 步复跑并写回笔记本，再重新导出 HTML |
 | `Manipulate` 没有可拖动滑块 | 属于 Woxi CLI/Jupyter 内核限制；改用 [[本地Woxi Playground]] 或本地 HTML |
 | Woxi Studio 崩溃 | 不修 Studio，继续使用本流程 |
+| 用户已关浏览页，JupyterLab 还在 | 执行第 9 步：停 JupyterLab，并关掉 `localhost:8888` 和本次结果 HTML 标签 |
 

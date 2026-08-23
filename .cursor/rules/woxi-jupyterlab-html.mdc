@@ -1,0 +1,49 @@
+---
+description: 本库运行 Woxi 必须走 JupyterLab → 复跑 → 离线 HTML，禁止用 Studio
+alwaysApply: true
+---
+
+# Woxi 演示规则
+
+本库用 **JupyterLab + Woxi 内核** 写代码并导出离线 HTML。完整步骤见 `03_工作流/Woxi-JupyterLab到HTML展示工作流.md`。
+
+**禁止**打开本机 Woxi Studio（macOS 26 会崩溃）。**禁止**把演示改成依赖官网 Playground。
+
+## 交付目录
+
+每个主题单独放 `02_演示/主题名/`，至少两份：
+
+- `主题名.ipynb`
+- `主题名结果.html`
+
+示例：`02_演示/抛物线/y=x²绘图.ipynb` 与 `y=x²绘图结果.html`。
+
+## 固定步骤
+
+1. 启动 JupyterLab：双击 `01_安装与排障/打开本地JupyterLab.command`。内核必须是 **Woxi (Wolfram Language)**，不要选 Python。
+2. 第一个代码单元跑 `1 + 2`，必须输出 `3`。这只是内核自检，不是演示内容。
+3. 编写 Wolfram 风格代码，在 JupyterLab 里 **Run All Cells**，确认无红色报错后保存。
+4. 在仓库根目录复跑并写回笔记本：
+
+```bash
+venv/bin/python -m jupyter nbconvert \
+  --execute --to notebook --inplace \
+  --ExecutePreprocessor.timeout=60 \
+  '02_演示/主题名/主题名.ipynb'
+```
+
+5. 再导出离线 HTML（生成在笔记本同目录）：
+
+```bash
+venv/bin/python -m jupyter nbconvert \
+  --to html --output '主题名结果.html' \
+  '02_演示/主题名/主题名.ipynb'
+```
+
+6. 用浏览器打开 HTML，确认标题、代码、计算或 SVG 图形都在；刷新后仍在。向用户提供可点击的 HTML 路径；需要继续改代码时再给 `.ipynb` 路径。
+7. 用户说可以关了、关掉浏览页、或看完结果后：立刻停掉本库 JupyterLab 进程，并只关闭相关标签（`localhost:8888` 的 JupyterLab、本次结果 HTML）。不要退出整个浏览器，也不要删 `.ipynb` / `.html`。
+
+## 限制
+
+- `Plot` 在纯文本 CLI 里可能只显示 `-Graphics-`；以 JupyterLab / HTML 里的图形为准。
+- `Manipulate` 在本内核没有可拖滑块时，改用本地 HTML 或 `01_安装与排障/woxi-playground-local/`，不要去修 Studio。

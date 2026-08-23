@@ -1,0 +1,12 @@
+{
+  "model": "google/gemini-3.7-flash",
+  "chunks": 11,
+  "requests": 11,
+  "automatic_retries": 0,
+  "response_cost_sum_usd": 0.09679275,
+  "snapshot_delta_usd": 0.0843157500000018,
+  "started_at": "2026-08-22T17:45:21.992002+00:00",
+  "finished_at": "2026-08-22T17:50:44.137650+00:00",
+  "safety_limit_usd": 0.13,
+  "attribution_warning": "Snapshot delta is exact only if no concurrent task used the same OpenRouter key."
+}

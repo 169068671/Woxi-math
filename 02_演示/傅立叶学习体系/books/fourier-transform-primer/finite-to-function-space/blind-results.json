@@ -1,0 +1,47 @@
+{
+  "skill": "finite-to-function-space",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "finite-to-function-space",
+      "reason": "问题直接询问函数为何能被视为向量，属于从有限维线性代数迁移到函数空间的核心触发。",
+      "if_triggered_action": "对照向量与函数、点积与积分、矩阵与线性算子，并补充定义域、函数空间、范数和收敛条件。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "finite-to-function-space",
+      "reason": "用户明确要求把线性代数结构类比到函数空间，与 skill 的执行目标完全一致。",
+      "if_triggered_action": "先列有限维对象及运算，再逐项给出函数空间对应物，最后对每项说明成立条件和失效边界。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "finite-to-function-space",
+      "reason": "用户点名该单元并要求离线实验，符合将抽象迁移变为可计算教学步骤的场景。",
+      "if_triggered_action": "用逐步加密的采样向量近似函数，对比离散点积与函数内积，并展示网格改变时的数值误差。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询不涉及函数空间或线性代数结构迁移。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "discrete-continuous-limit",
+      "reason": "用户明确指定了离散到连续极限的相邻 skill，本 skill 不应抢占调用。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "这是只要中文定义的纯信息请求，而该 skill 明确不用于纯粹查定义。",
+      "if_triggered_action": null
+    }
+  ]
+}

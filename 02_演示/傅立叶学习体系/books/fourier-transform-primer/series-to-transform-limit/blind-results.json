@@ -1,0 +1,47 @@
+{
+  "skill": "series-to-transform-limit",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "series-to-transform-limit",
+      "reason": "问题直接要求建立傅立叶级数到傅立叶变换的极限桥，正是该 skill 的专属主题。",
+      "if_triggered_action": "从完整傅立叶级数变换对出发，同时追踪 T 趋于无穷、频率间隔趋于 df、离散频点趋于连续变量以及加权求和趋于积分，并检查频谱密度尺度。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "series-to-transform-limit",
+      "reason": "“T 越长频率越密”是该 skill 明列的语言信号，要求解释 f0=1/T 与连续频谱极限。",
+      "if_triggered_action": "用多个递增周期计算频率间隔 1/T，画出逐渐变密的离散谱线，并说明极限中谱线坐标如何转为频谱密度和积分测度。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "series-to-transform-limit",
+      "reason": "用户点名要求以离线实验讲解周期拉伸构造傅立叶变换，任务与该 skill 的案例和执行流程一致。",
+      "if_triggered_action": "保持单个脉冲宽度不变，交互调整周期 T，联动画出时域周期副本、频率采样间隔和加权谱线，验证求和到积分的尺度变化，并注明极限成立条件。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询与傅立叶级数极限、频率网格或频谱密度无关。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "fourier-convention-audit",
+      "reason": "用户明确只要另一个 skill 的适用场景；当前 skill 与其虽可组合，但不应抢占调用。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "只查中文定义且不需要推导或实验，属于 description 明确排除的纯定义场景。",
+      "if_triggered_action": null
+    }
+  ]
+}

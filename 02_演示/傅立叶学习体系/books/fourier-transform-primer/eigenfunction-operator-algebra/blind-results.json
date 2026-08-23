@@ -1,0 +1,47 @@
+{
+  "skill": "eigenfunction-operator-algebra",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "eigenfunction-operator-algebra",
+      "reason": "询问为何使用 e^{st} 正是用微分算子特征函数将求导代数化的直接触发信号。",
+      "if_triggered_action": "说明 D e^{st}=s e^{st}，确认常系数线性条件，将 P(D) 转为 P(s)，按根型构造独立解并逐项代回验证。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "eigenfunction-operator-algebra",
+      "reason": "把微分方程化为代数方程是该 skill 的核心任务。",
+      "if_triggered_action": "确认算子线性且为适合的常系数形式，代入指数特征函数得到特征多项式，求根、重建时域解，并检查重根与变系数反例。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "eigenfunction-operator-algebra",
+      "reason": "用户明确点名该方法并要求离线实验，需要执行特征函数法的可计算验证。",
+      "if_triggered_action": "制作离线实验，对 e^{st} 施加微分算子并显示只改变倍率，交互改变多项式系数、观察根型与时域解，再代回显示残差。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询与线性算子、特征函数和微分方程无关。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "complex-exponential-frequency-pair",
+      "reason": "用户明确指定另一个 skill 且只问其适用场景，本 skill 不应触发。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "用户只查询中文定义并明确不要推导或实验，符合本 skill 排除的纯定义情形。",
+      "if_triggered_action": null
+    }
+  ]
+}

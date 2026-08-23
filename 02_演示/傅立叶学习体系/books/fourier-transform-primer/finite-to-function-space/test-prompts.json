@@ -1,0 +1,52 @@
+{
+  "skill": "finite-to-function-space",
+  "version": "0.1.0",
+  "source_book": "工科生苦傅立叶久矣！傅立叶变换究极入门 — AI Sci Ke 理工柯小西",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "函数为什么能当向量？",
+      "expected_behavior": "应激活 finite-to-function-space，按执行步骤给出公式、条件和核验",
+      "notes": "直接命中核心问题"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "把线性代数类比到函数空间",
+      "expected_behavior": "应激活 finite-to-function-space 并构造可检查的推导",
+      "notes": "诊断/推导场景"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "请用一个离线小实验讲清楚：从有限维结构迁移到函数空间",
+      "expected_behavior": "应激活 finite-to-function-space 并同步解释图、数值与公式",
+      "notes": "教学实验场景"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "帮我查一下今天的天气。",
+      "expected_behavior": "不应激活任何傅立叶学习 skill",
+      "notes": "完全无关诱饵"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我想学习另一个单元，请只解释 discrete-continuous-limit 的适用场景。",
+      "expected_behavior": "不应激活本 skill，应激活 discrete-continuous-limit",
+      "notes": "同书兄弟 skill 混淆诱饵"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "只告诉我‘从有限维结构迁移到函数空间’的中文定义，不要推导也不要实验。",
+      "expected_behavior": "不应完整激活；只做简短定义，并说明需要推导或诊断时再使用",
+      "notes": "纯定义边界"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "3 条应触发、2 条不应触发、1 条边界；诱饵容错为 0。"
+}

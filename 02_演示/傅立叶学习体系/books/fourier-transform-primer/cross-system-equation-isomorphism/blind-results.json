@@ -1,0 +1,47 @@
+{
+  "skill": "cross-system-equation-isomorphism",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "cross-system-equation-isomorphism",
+      "reason": "用户直接询问两个系统能否共享方法，正是比较控制方程结构并判断能否迁移解法的触发场景。",
+      "if_triggered_action": "分别写出两套最小控制方程，按惯性/储能/耗散/激励配对系数，核验阶数、线性、单位与边界条件后再迁移解法，并检查一个失配反例。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "cross-system-equation-isomorphism",
+      "reason": "机械—电路类比是该 skill 的直接语言信号，任务核心是识别方程角色同构。",
+      "if_triggered_action": "并列建立机械与电路控制方程，给出质量/电感、阻尼/电阻、弹性/电容和外激励的角色映射，再用单位及边界条件验证类比范围。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "cross-system-equation-isomorphism",
+      "reason": "用户点名该方法并要求离线实验，既匹配主题也需要执行可验证步骤。",
+      "if_triggered_action": "构造机械振子与 RLC 电路的同参数无量纲离线实验，对比响应曲线与特征根，并加入非线性摩擦或边界不匹配的反例。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询与方程同构、数学推导或系统类比无关。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "discrete-operator-matrix",
+      "reason": "用户明确限定只解释另一个 skill 的适用场景，应尊重点名路由，不调用本 skill。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "用户只要中文定义且明确不要推导或实验；本 skill 的边界明确排除纯粹查定义。",
+      "if_triggered_action": null
+    }
+  ]
+}

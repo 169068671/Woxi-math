@@ -1,0 +1,47 @@
+{
+  "skill": "projection-coordinate-reconstruction",
+  "results": [
+    {
+      "id": "should-trigger-01",
+      "would_trigger": true,
+      "selected_skill": "projection-coordinate-reconstruction",
+      "reason": "问题直接追问变换与逆变换的结构来源，正是把变换拆成投影求坐标与用坐标重建的触发场景。",
+      "if_triggered_action": "标出原对象、基和内积，用内积求坐标，再用坐标与基重建，并检查归一化、正交性与重建误差。"
+    },
+    {
+      "id": "should-trigger-02",
+      "would_trigger": true,
+      "selected_skill": "projection-coordinate-reconstruction",
+      "reason": "用投影角度推导公式是该 skill 的明确语言信号。",
+      "if_triggered_action": "确定候选基和内积，逐基投影得到坐标，然后展示综合式并验证正逆过程是否互相复原。"
+    },
+    {
+      "id": "should-trigger-03",
+      "would_trigger": true,
+      "selected_skill": "projection-coordinate-reconstruction",
+      "reason": "用户点名该单元并要求可运行的离线实验，属于教学与数值验证场景。",
+      "if_triggered_action": "构造二维或三维正交基实验，可视化原向量、各投影坐标与重建向量，并计算重建误差。"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "天气查询与投影、坐标变换或数学推导无关。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "should-not-trigger-02",
+      "would_trigger": false,
+      "selected_skill": "finite-to-function-space",
+      "reason": "用户明确指定了另一个 skill，问的是有限维结构迁移到函数空间的适用场景。",
+      "if_triggered_action": null
+    },
+    {
+      "id": "edge-01",
+      "would_trigger": false,
+      "selected_skill": null,
+      "reason": "用户限定为纯定义查询，且明确不要推导或实验；该 skill 的边界明确排除纯粹查定义。",
+      "if_triggered_action": null
+    }
+  ]
+}
