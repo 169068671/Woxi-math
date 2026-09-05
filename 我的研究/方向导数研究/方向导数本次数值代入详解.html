@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>方向导数：一边看图，一边把数字算出来</title>
+  <style>
+    :root{--paper:#f7f3ea;--card:#fffdf8;--ink:#14233d;--muted:#657087;--line:#d9d5ca;--blue:#2878c8;--pale:#b9daf5;--orange:#f15a24;--green:#16835f;--navy:#10295b;--warm:#fff2e8;--shadow:0 16px 42px rgba(32,44,64,.08)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.65}.page{width:min(1180px,calc(100% - 28px));margin:auto;padding:22px 0 64px}.back,.symbols-all{display:inline-flex;align-items:center;gap:7px;color:var(--blue);font-weight:800;text-decoration:none}.topnav{display:flex;justify-content:space-between;gap:16px;margin-bottom:20px}header{text-align:center;padding:12px 0 22px}h1{font-size:clamp(32px,5vw,58px);line-height:1.12;letter-spacing:-.045em;margin:0}header p{color:var(--muted);font-size:18px;margin:10px 0 0}.snapshot{display:grid;grid-template-columns:1.3fr repeat(4,1fr);background:var(--navy);color:#fff;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:22px}.snapshot>div{padding:15px 17px;border-right:1px solid rgba(255,255,255,.16)}.snapshot>div:last-child{border:0}.snapshot small{display:block;color:#b9c7e2;margin-bottom:3px}.snapshot b{font:700 17px Georgia,"Songti SC",serif}.snapshot .lead{font-family:inherit;font-size:16px}.story{display:grid;grid-template-columns:1.08fr .92fr;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);margin:20px 0}.story.reverse .visual{order:2;border-right:0;border-left:1px solid var(--line)}.story.reverse .calc{order:1}.visual{padding:27px 24px;border-right:1px solid var(--line);background:linear-gradient(145deg,#fff 0%,#f6faff 100%);min-height:430px;display:flex;flex-direction:column;justify-content:center}.visual h2,.calc h2{font-size:25px;line-height:1.25;margin:0 0 8px}.eyebrow{color:var(--orange);font-weight:900;letter-spacing:.08em;font-size:13px}.visual>p,.calc>p{color:var(--muted);margin:4px 0 15px}.calc{padding:31px 29px;display:flex;flex-direction:column;justify-content:center}.math{font:19px/1.9 Georgia,"Songti SC",serif;background:#f2f7fc;border-left:4px solid var(--blue);padding:13px 16px;margin:8px 0;border-radius:0 10px 10px 0;overflow:auto}.math strong{color:var(--orange)}.math .green{color:var(--green)}.human{font-size:16px!important;color:var(--ink)!important;border-top:1px dashed var(--line);padding-top:12px;margin-top:13px!important}.human b{color:var(--blue)}.note{background:var(--warm);border:1px solid #efc7aa;padding:11px 13px;border-radius:10px;font-size:14px;margin-top:10px}.note b{color:#b94218}.symbol-link{display:inline-flex;vertical-align:middle;align-items:center;margin:0 3px;padding:1px 7px;border:1px solid #a9cceb;border-radius:999px;background:#f5faff;color:#1766ad;text-decoration:none;font:700 12px/1.6 -apple-system,"PingFang SC",sans-serif;white-space:nowrap}.symbol-link:hover{background:#e5f3ff}.symbol-link:after{content:" ↗"}.diagram-caption{text-align:center;color:var(--muted);font-size:13px;margin-top:8px}svg{width:100%;height:auto;display:block;overflow:visible}.axis{stroke:var(--blue);stroke-width:2}.contour{stroke:var(--pale);stroke-width:1.5;fill:none}.guide{stroke:#aab4c4;stroke-width:1.3;stroke-dasharray:5 5}.move{stroke:var(--orange);stroke-width:4;fill:none}.run{stroke:var(--blue);stroke-width:3}.rise{stroke:var(--orange);stroke-width:3}.curve{stroke:var(--ink);stroke-width:3;fill:none}.tangent{stroke:var(--green);stroke-width:3}.label{font:700 14px -apple-system,"PingFang SC",sans-serif;fill:var(--ink)}.small{font:600 12px -apple-system,"PingFang SC",sans-serif;fill:var(--muted)}.blue{fill:var(--blue)}.orange{fill:var(--orange)}.green{fill:var(--green)}.secants{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}.sec{text-align:center;border:1px solid var(--line);border-radius:10px;padding:7px 4px;background:#fff}.sec.current{border:2px solid var(--orange)}.sec.limit{border:2px solid var(--green)}.sec b{font:700 13px Georgia,serif}.sec em{display:block;font:normal 700 12px Consolas,monospace}.check{background:#edf8f3;border:1px solid #a6d4c3;border-radius:14px;padding:18px 20px;margin-top:17px}.check h3{margin:0 0 8px;color:var(--green)}.summary{background:var(--navy);color:#fff;border-radius:18px;padding:24px;text-align:center;font-size:23px;font-weight:800;margin-top:22px}.summary strong{color:#66ddb0}.precision{background:#fff8dd;border:1px solid #ead18e;border-radius:12px;padding:13px 16px;margin-top:12px;font-size:14px}.precision b{color:var(--orange)}
+    .explain-link{display:inline-flex;align-items:center;margin-top:10px;padding:9px 13px;border-radius:10px;background:var(--orange);color:#fff;font-weight:900;text-decoration:none;box-shadow:0 8px 20px rgba(241,90,36,.18)}.explain-link:active{transform:scale(.98)}
+    @media(max-width:850px){.snapshot{grid-template-columns:1fr 1fr}.snapshot>div{border-bottom:1px solid rgba(255,255,255,.16)}.snapshot>div:nth-child(2n){border-right:0}.snapshot>div:first-child{grid-column:1/-1}.story{grid-template-columns:1fr}.visual,.story.reverse .visual{order:1;border:0;border-bottom:1px solid var(--line);min-height:0}.calc,.story.reverse .calc{order:2}.secants{grid-template-columns:1fr 1fr}}@media(max-width:520px){.page{width:calc(100% - 14px);padding-top:12px}.topnav{font-size:13px}.snapshot{grid-template-columns:1fr}.snapshot>div:first-child{grid-column:auto}.snapshot>div{border-right:0}.visual,.calc{padding:21px 16px}.math{font-size:16px}.symbol-link{font-size:11px}.summary{font-size:19px}}
+  </style>
+</head>
+<body><main class="page">
+  <nav class="topnav"><a class="back" href="方向导数九宫格详解.html">← 回到九宫格实验</a><a class="symbols-all" href="方向导数符号图片示例.html">符号图片示例总页 →</a></nav>
+  <header><h1>方向导数：一边看图，一边把数字算出来</h1><p>同一次移动，用地图、侧视图和算式各解释一遍。</p></header>
+
+  <section class="snapshot" aria-label="本例固定数据"><div><small>本例函数</small><b class="lead">f(x,y)=(x²+y²)/4</b></div><div><small>移动起点</small><b>P=(1,1)</b></div><div><small>方向</small><b>θ=45°</b></div><div><small>选定步长</small><b>h=0.0112</b></div><div><small>最终方向导数</small><b>0.7071</b></div></section>
+
+  <section class="story">
+    <div class="visual"><div class="eyebrow">图 1 · 俯视地图</div><h2>在 xy 地图上选 45° 方向</h2><p>蓝色坐标轴只负责定位；真正移动从 P 开始。</p>
+      <svg viewBox="0 0 560 330" role="img" aria-label="从P点沿45度单位方向移动的俯视图"><defs><marker id="a1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#f15a24"/></marker><marker id="b1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#2878c8"/></marker></defs><line class="axis" x1="45" y1="255" x2="520" y2="255" marker-end="url(#b1)"/><line class="axis" x1="145" y1="300" x2="145" y2="25" marker-end="url(#b1)"/><text class="label blue" x="510" y="278">x</text><text class="label blue" x="124" y="30">y</text><ellipse class="contour" cx="145" cy="255" rx="85" ry="36"/><ellipse class="contour" cx="145" cy="255" rx="145" ry="68"/><ellipse class="contour" cx="145" cy="255" rx="205" ry="104"/><circle cx="145" cy="255" r="6" fill="#2878c8"/><text class="label blue" x="155" y="276">O=(0,0)</text><circle cx="320" cy="150" r="8" fill="#14233d"/><text class="label" x="331" y="145">P=(1,1)</text><line class="move" x1="320" y1="150" x2="470" y2="60" marker-end="url(#a1)"/><text class="label orange" x="406" y="85">u</text><line class="guide" x1="320" y1="150" x2="442" y2="150"/><line class="guide" x1="442" y1="150" x2="442" y2="77"/><path d="M360 150a40 40 0 0 0-6-21" fill="none" stroke="#f15a24" stroke-width="2"/><text class="label orange" x="365" y="138">45°</text></svg>
+      <div class="diagram-caption">O 是坐标原点；P=(1,1) 才是本次移动的起点。</div>
+    </div>
+    <div class="calc"><div class="eyebrow">计算 1 · 先认方向</div><h2>把 45° 拆成 x、y 两个分量</h2>
+      <p><b>f(x,y)</b><a class="symbol-link" href="方向导数符号图片示例.html#symbol-f">看 f 的图</a>表示位置 (x,y) 对应的高度。<b>O</b><a class="symbol-link" href="方向导数符号图片示例.html#symbol-O">看 O 的图</a>是坐标原点；<b>P</b><a class="symbol-link" href="方向导数符号图片示例.html#symbol-P">看 P 的图</a>是移动起点。</p>
+      <div class="math">f(P)=f(1,1)=(1²+1²)/4=<strong>0.5</strong></div>
+      <p><b>θ</b><a class="symbol-link" href="方向导数符号图片示例.html#symbol-theta">看 θ 的图</a>是从 x 轴正方向逆时针量出的方向角。</p>
+      <div class="math">u<a class="symbol-link" href="方向导数符号图片示例.html#symbol-u">看 u 的图</a>=(cos45°,sin45°)<br>=(√2/2,√2/2)<br>≈(<strong>0.70710678</strong>,<strong>0.70710678</strong>)</div>
+      <div class="math">|u|<a class="symbol-link" href="方向导数符号图片示例.html#symbol-norm-u">看 |u| 的图</a>=√[(√2/2)²+(√2/2)²]=<strong>1</strong></div>
+      <p class="human"><b>读成人话：</b>沿 u 走 1 个长度单位时，x、y 各增加约 0.7071。</p>
+    </div>
+  </section>
+
+  <section class="story reverse">
+    <div class="visual"><div class="eyebrow">图 2 · 位移放大图</div><h2>从 P 走 0.0112 到 P+hu</h2><p>图把这一步放大了，实际的 0.0112 很短。</p>
+      <svg viewBox="0 0 560 330" role="img" aria-label="步长h乘单位方向u得到坐标增量"><defs><marker id="a2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#f15a24"/></marker></defs><circle cx="100" cy="250" r="8" fill="#14233d"/><text class="label" x="72" y="280">P=(1,1)</text><line class="move" x1="100" y1="250" x2="440" y2="75" marker-end="url(#a2)"/><circle cx="440" cy="75" r="8" fill="#f15a24"/><text class="label orange" x="372" y="49">P+hu</text><line class="run" x1="100" y1="250" x2="440" y2="250"/><line class="rise" x1="440" y1="250" x2="440" y2="75"/><text class="label blue" x="205" y="279">Δx=0.00791960</text><text class="label orange" transform="translate(474 235) rotate(-90)">Δy=0.00791960</text><text class="label orange" x="226" y="145">|hu|=h=0.0112</text></svg>
+      <div class="diagram-caption">h 决定走多远，u 决定往哪里走；hu 合起来才是实际位移。</div>
+    </div>
+    <div class="calc"><div class="eyebrow">计算 2 · 再算新位置</div><h2>h 乘 u，得到坐标改变</h2>
+      <p><b>h</b><a class="symbol-link" href="方向导数符号图片示例.html#symbol-h">看 h 的图</a>是我们主动选择的步长，不是函数算出来的。这里 h=0.0112&gt;0，所以沿 u 的正方向前进。</p>
+      <div class="math">hu<a class="symbol-link" href="方向导数符号图片示例.html#symbol-hu">看 hu 的图</a>=0.0112(√2/2,√2/2)<br>=(<strong>0.00791960</strong>,<strong>0.00791960</strong>)</div>
+      <div class="math">P+hu<a class="symbol-link" href="方向导数符号图片示例.html#symbol-endpoint">看新位置</a><br>=(1,1)+(0.00791960,0.00791960)<br>=<strong>(1.00791960,1.00791960)</strong></div>
+      <div class="note"><b>为什么走过距离就是 h？</b>因为 u 是单位向量，|u|=1，所以 |hu|=|h||u|=0.0112×1=0.0112。</div>
+      <p class="human"><b>读成人话：</b>从 P 沿 45° 走 0.0112，x、y 各增加 0.00791960。</p>
+    </div>
+  </section>
+
+  <section class="story">
+    <div class="visual"><div class="eyebrow">图 3 · 曲面侧视图</div><h2>把两个平面位置抬到曲面上</h2><p>地图上的移动产生了高度变化。</p>
+      <svg viewBox="0 0 560 330" role="img" aria-label="曲面侧视图比较移动前后高度"><path class="curve" d="M45 275Q165 65 520 55"/><line class="axis" x1="35" y1="278" x2="530" y2="278"/><line class="guide" x1="155" y1="278" x2="155" y2="135"/><line class="guide" x1="430" y1="278" x2="430" y2="67"/><circle cx="155" cy="135" r="8" fill="#2878c8"/><circle cx="430" cy="67" r="8" fill="#f15a24"/><line class="guide" x1="155" y1="135" x2="430" y2="135"/><line class="rise" x1="430" y1="135" x2="430" y2="67"/><text class="label blue" x="95" y="116">f(P)=0.50000000</text><text class="label orange" x="316" y="44">f(P+hu)=0.50795096</text><text class="label orange" x="442" y="108">Δf</text><text class="small" x="145" y="301">P</text><text class="small" x="405" y="301">P+hu</text></svg>
+      <div class="diagram-caption">橙色竖线不是行走距离，而是函数高度的增加量 Δf。</div>
+    </div>
+    <div class="calc"><div class="eyebrow">计算 3 · 比较两个高度</div><h2>新高度减旧高度</h2>
+      <div class="math">f(P+hu)<br>=[(1.00791960)²+(1.00791960)²]/4<br>=<strong>0.50795096</strong></div>
+      <p><b>Δ</b><a class="symbol-link" href="方向导数符号图片示例.html#symbol-delta">看 Δ 的图</a>读作 delta，意思是“新值减旧值”。</p>
+      <div class="math">Δf<a class="symbol-link" href="方向导数符号图片示例.html#symbol-delta-f">看 Δf 的图</a>=f(P+hu)−f(P)<br>=0.50795096−0.50000000<br>=<strong>0.00795096</strong>≈0.0080</div>
+      <p class="human"><b>读成人话：</b>走完这一小步后，高度实际增加 0.00795096，显示到四位小数是 0.0080。</p>
+    </div>
+  </section>
+
+  <section class="story reverse">
+    <div class="visual"><div class="eyebrow">图 4 · 坡度三角形</div><h2>高度差 ÷ 水平距离</h2><p>斜边表示曲面上的变化趋势；蓝底边是走过的距离。</p>
+      <svg viewBox="0 0 560 330" role="img" aria-label="高度变化除以行走距离的坡度三角形"><path d="M65 270L485 65L485 270Z" fill="#eef6fd"/><line class="run" x1="65" y1="270" x2="485" y2="270"/><line class="rise" x1="485" y1="270" x2="485" y2="65"/><line x1="65" y1="270" x2="485" y2="65" stroke="#14233d" stroke-width="4"/><text class="label blue" x="205" y="300">Δs=0.0112</text><text class="label orange" transform="translate(523 245) rotate(-90)">Δf=0.00795096</text><text class="label" x="175" y="165">平均坡度 = Δf / Δs</text><text class="label orange" x="226" y="198">= 0.70990678</text></svg>
+      <div class="diagram-caption">平均坡度回答：平均每走 1 个距离单位，高度改变多少。</div>
+    </div>
+    <div class="calc"><div class="eyebrow">计算 4 · 算这一小段的平均坡度</div><h2>先算距离，再做除法</h2>
+      <div class="math">Δs<a class="symbol-link" href="方向导数符号图片示例.html#symbol-delta-s">看 Δs 的图</a>=|hu|=h|u|=0.0112×1=<strong>0.0112</strong></div>
+      <div class="math">Δf/Δs<a class="symbol-link" href="方向导数符号图片示例.html#symbol-average">看平均坡度</a><br>=0.00795096/0.0112<br>=<strong>0.70990678</strong>≈0.7099</div>
+      <p class="human"><b>读成人话：</b>在这段长 0.0112 的小路上，每走 1 个距离单位，高度平均增加约 0.7099。</p>
+      <div class="note"><b>不要用 0.0080 继续算。</b>它是四舍五入后的显示值。若用 0.0080÷0.0112，会错误地得到 0.7143。</div>
+    </div>
+  </section>
+
+  <section class="story" id="calculation-5">
+    <div class="visual"><div class="eyebrow">图 5 · 割线逐渐变成切线</div><h2>让 h 越来越小</h2><p>每一格仍在算平均坡度，但观察范围不断缩小。</p>
+      <div class="secants"><div class="sec"><b>h=0.5</b><svg viewBox="0 0 110 105"><circle cx="12" cy="90" r="4"/><circle cx="98" cy="28" r="4" fill="#f15a24"/><line x1="12" y1="90" x2="98" y2="28" stroke="#14233d" stroke-width="3"/></svg><em>0.8321</em></div><div class="sec"><b>h=0.1</b><svg viewBox="0 0 110 105"><circle cx="12" cy="90" r="4"/><circle cx="98" cy="38" r="4" fill="#f15a24"/><line x1="12" y1="90" x2="98" y2="38" stroke="#14233d" stroke-width="3"/></svg><em>0.7321</em></div><div class="sec current"><b>h=0.0112</b><svg viewBox="0 0 110 105"><circle cx="12" cy="90" r="4"/><circle cx="98" cy="40" r="4" fill="#f15a24"/><line x1="12" y1="90" x2="98" y2="40" stroke="#14233d" stroke-width="3"/></svg><em>0.7099</em></div><div class="sec limit"><b>h→0</b><svg viewBox="0 0 110 105"><circle cx="12" cy="90" r="4"/><line x1="12" y1="90" x2="101" y2="42" class="tangent"/></svg><em>0.7071</em></div></div>
+      <div class="diagram-caption">黑色割线的斜率逐步靠近绿色切线的斜率。</div>
+    </div>
+    <div class="calc"><div class="eyebrow">计算 5 · 从平均走向瞬时</div><h2>h→0 时，平均坡度稳定到 0.7071</h2>
+      <p><b>h→0</b><a class="symbol-link" href="方向导数符号图片示例.html#symbol-limit">看极限动画分镜</a>表示 h 越来越接近 0，不是把 h 直接等于 0。</p>
+      <div class="math">本例的平均坡度<br>=1/√2+h/4</div>
+      <div class="math">h=0.5 → 0.8321<br>h=0.1 → 0.7321<br>h=0.0112 → 0.7099<br>h→0 → <span class="green"><strong>0.7071</strong></span></div>
+      <div class="math">D<sub>u</sub>f(P)<a class="symbol-link" href="方向导数符号图片示例.html#symbol-directional">看 Dᵤf(P) 的图</a><br>=lim<sub>h→0</sub>[f(P+hu)−f(P)]/h<br>=1/√2≈<span class="green"><strong>0.70710678</strong></span></div>
+      <p class="human"><b>读成人话：</b>观察范围缩到无限小时，得到 P 点沿 u 方向的瞬时坡度，这才叫方向导数。</p>
+      <a class="explain-link" href="方向导数计算五与梯度详细解释.html#calculation-5">计算五和图五没看懂：打开逐步解释 →</a>
+    </div>
+  </section>
+
+  <section class="check"><h3>最后用梯度再核对一次</h3><div class="math">∇f(P)<a class="symbol-link" href="方向导数符号图片示例.html#symbol-gradient">看梯度的图</a>=(0.5,0.5)<br>∇f(P)·u<a class="symbol-link" href="方向导数符号图片示例.html#symbol-dot">看点积投影</a>=(0.5,0.5)·(√2/2,√2/2)<br>=√2/2≈<span class="green"><strong>0.7071</strong></span></div><p>梯度是“最陡上升箭头”，点积把它在 u 方向上的那一部分取出来，因此结果与极限计算相同。</p><a class="explain-link" href="方向导数计算五与梯度详细解释.html#gradient">梯度计算没看懂：从偏导数开始解释 →</a></section>
+
+  <div class="summary">方向导数，就是在某一点、沿某个方向的<strong>瞬时变化率</strong>。</div>
+  <div class="precision"><b>= 与 ≈ 不一样：</b><a class="symbol-link" href="方向导数符号图片示例.html#symbol-equals">看精确与近似</a>“=”表示严格相等；“≈”表示已经四舍五入。页面先用未舍入数字计算，最后才显示 0.0080、0.7099、0.7071。</div>
+</main></body></html>

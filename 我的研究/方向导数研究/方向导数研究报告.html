@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向导数研究报告</title>
+<style>
+  :root {
+    --bg: #faf7f2; --card: #fff; --soft: #f5f0e8;
+    --text: #2d2a26; --text-2: #6b655d; --text-3: #9c948a;
+    --blue: #2563eb; --blue-l: #dbeafe; --blue-d: #1e40af;
+    --orange: #ea580c; --orange-l: #fed7aa; --orange-d: #9a3412;
+    --green: #16a34a; --green-l: #bbf7d0; --green-d: #15803d;
+    --rose: #be123c; --rose-l: #ffe4e6; --rose-d: #9f1239;
+    --purple: #7c3aed; --purple-l: #ede9fe; --purple-d: #5b21b6;
+    --border: #e8e2d9; --shadow: 0 2px 8px rgba(0,0,0,0.07);
+    --radius: 12px; --radius-lg: 18px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Serif SC','Source Han Serif SC','Songti SC',Georgia,serif;
+    background: var(--bg); color: var(--text); line-height: 1.85; font-size: 16px;
+  }
+  .top-bar {
+    background: var(--card); border-bottom: 1px solid var(--border);
+    padding: 12px 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow);
+  }
+  .top-bar-inner {
+    max-width: 760px; margin: 0 auto; padding: 0 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .top-bar a { color: var(--text); text-decoration: none; font-size: 14px; }
+  .top-bar a:hover { color: var(--blue); }
+  .container { max-width: 720px; margin: 0 auto; padding: 44px 24px 80px; }
+
+  .report-header { margin-bottom: 44px; padding-bottom: 28px; border-bottom: 2px solid var(--border); }
+  .report-tag {
+    display: inline-block; background: var(--green-l); color: var(--green-d);
+    padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 14px;
+  }
+  .report-title { font-size: 32px; font-weight: 700; line-height: 1.3; margin-bottom: 12px; }
+  .report-sub { font-size: 16px; color: var(--text-2); line-height: 1.6; }
+  .report-meta { display: flex; gap: 20px; margin-top: 18px; font-size: 13px; color: var(--text-3); }
+
+  h2 { font-size: 23px; margin-top: 50px; margin-bottom: 16px; font-weight: 700; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 18px; margin-top: 32px; margin-bottom: 10px; font-weight: 600; }
+  h4 { font-size: 15px; margin-top: 22px; margin-bottom: 8px; font-weight: 600; }
+  p { margin-bottom: 14px; }
+  .hl { background: linear-gradient(180deg, transparent 60%, var(--blue-l) 60%); padding: 0 2px; }
+  .hl-g { background: linear-gradient(180deg, transparent 60%, var(--green-l) 60%); padding: 0 2px; }
+  .hl-o { background: linear-gradient(180deg, transparent 60%, var(--orange-l) 60%); padding: 0 2px; }
+
+  .formula {
+    background: var(--soft); border-radius: var(--radius); padding: 16px 22px;
+    margin: 16px 0; text-align: center;
+    font-family: 'Times New Roman', serif; font-size: 18px; color: var(--text); overflow-x: auto;
+  }
+  .formula-core {
+    background: linear-gradient(135deg, var(--blue-l) 0%, #eff6ff 100%);
+    border: 2px solid var(--blue); border-radius: var(--radius-lg);
+    padding: 24px; margin: 22px 0; text-align: center; box-shadow: var(--shadow);
+  }
+  .formula-core .label { font-size: 12px; color: var(--blue-d); font-weight: 600; margin-bottom: 8px; letter-spacing: 1px; }
+  .formula-core .body { font-size: 24px; font-weight: 600; color: var(--blue-d); font-family: 'Times New Roman', serif; margin: 8px 0; }
+  .formula-core .desc { font-size: 13px; color: var(--text-2); margin-top: 8px; }
+
+  .box-tip { background: var(--blue-l); border-left: 4px solid var(--blue); border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 18px; margin: 20px 0; }
+  .box-tip .t { font-weight: 600; color: var(--blue-d); margin-bottom: 4px; font-size: 14px; }
+  .box-tip p { margin-bottom: 0; color: var(--text-2); font-size: 15px; }
+
+  .box-sum { background: var(--green-l); border-left: 4px solid var(--green); border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 18px; margin: 20px 0; }
+  .box-sum .t { font-weight: 600; color: var(--green-d); margin-bottom: 4px; font-size: 14px; }
+  .box-sum p { margin-bottom: 0; color: var(--text-2); font-size: 15px; }
+
+  .box-warn { background: var(--rose-l); border-left: 4px solid var(--rose); border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 18px; margin: 20px 0; }
+  .box-warn .t { font-weight: 600; color: var(--rose-d); margin-bottom: 4px; font-size: 14px; }
+  .box-warn p { margin-bottom: 0; color: var(--text-2); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14px; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: var(--soft); font-weight: 600; color: var(--text-2); font-size: 13px; }
+  td code { font-family: 'SF Mono', monospace; font-size: 13px; }
+
+  .viz { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin: 22px 0; box-shadow: var(--shadow); }
+  .viz .vt { font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 12px; text-align: center; }
+  .viz svg { width: 100%; height: auto; display: block; }
+
+  .comparison { display: flex; gap: 14px; margin: 20px 0; }
+  .comp-card { flex: 1; background: var(--card); border: 2px solid; border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow); }
+  .comp-card.ok { border-color: var(--green); }
+  .comp-card .ct { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .comp-card.ok .ct { color: var(--green-d); }
+  .comp-card p { font-size: 14px; margin-bottom: 0; }
+
+  ul, ol { margin: 14px 0; padding-left: 26px; }
+  li { margin-bottom: 6px; }
+
+  .check-list { list-style: none; padding-left: 0; }
+  .check-list li { padding-left: 28px; position: relative; margin-bottom: 8px; }
+  .check-list li::before { content: '✓'; position: absolute; left: 0; top: 0; color: var(--green); font-weight: 700; font-size: 18px; }
+
+  @media (max-width: 600px) {
+    .comparison { flex-direction: column; }
+    .report-title { font-size: 24px; }
+    .container { padding: 28px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <a href="README.md">← 返回目录</a>
+    <span style="font-size:13px; color:var(--text-3);">2026-08-26</span>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Header -->
+  <div class="report-header">
+    <span class="report-tag">研究报告 · 已验证</span>
+    <h1 class="report-title">方向导数完整研究报告</h1>
+    <p class="report-sub">以 f(x,y)=3x+4y 为核心案例，从偏导数到方向导数、梯度、自由度与全微分的系统验证与总结</p>
+    <div class="report-meta">
+      <span>来源：方向导数最简单总结.md</span>
+      <span>验证状态：全部正确</span>
+    </div>
+  </div>
+
+  <!-- 验证摘要 -->
+  <h2>一、验证摘要</h2>
+  <p>对源文件中全部数学计算与逻辑推导进行了逐条验算，结果如下：</p>
+
+  <ul class="check-list">
+    <li><strong>函数与偏导数</strong>：f(x,y)=3x+4y，fₓ=∂/∂x(3x+4y)=3，fᵧ=∂/∂y(3x+4y)=4 — 正确</li>
+    <li><strong>起点函数值</strong>：P=(1,1)，f(1,1)=3×1+4×1=7 — 正确</li>
+    <li><strong>梯度</strong>：∇f=(3,4)，‖∇f‖=√(9+16)=5 — 正确</li>
+    <li><strong>单位梯度方向</strong>：u_max=(3/5,4/5)=(0.6,0.8)，‖u_max‖=√(0.36+0.64)=1 — 正确</li>
+    <li><strong>沿梯度走0.1</strong>：位移=(0.06,0.08)，P'=(1.06,1.08)，f(1.06,1.08)=3.18+4.32=7.5，Δf=7.5−7=0.5=5×0.1 — 正确</li>
+    <li><strong>分解验证</strong>：x贡献 3×3/5=1.8，y贡献 4×4/5=3.2，合计 1.8+3.2=5.0 — 正确</li>
+    <li><strong>定义验证</strong>：f(1+3h/5, 1+4h/5)=7+9h/5+16h/5=7+25h/5=7+5h，变化率=5h/h=5 — 正确</li>
+    <li><strong>任意方向公式</strong>：D_uf=∇f·u=3cosα+4sinα=5cosθ — 正确</li>
+    <li><strong>坐标轴方向</strong>：D_ex f=(3,4)·(1,0)=3，D_ey f=(3,4)·(0,1)=4 — 正确</li>
+    <li><strong>反方向</strong>：D=(3,4)·(−3/5,−4/5)=−9/5−16/5=−5 — 正确</li>
+    <li><strong>垂直方向</strong>：D=(3,4)·(4/5,−3/5)=12/5−12/5=0 — 正确</li>
+    <li><strong>df vs Δf</strong>：f(x)=x²在x=1，Δx=0.1时 Δf=0.21，df=0.2；Δx=0.001时 Δf=0.002001，df=0.002 — 正确</li>
+    <li><strong>n−1自由度</strong>：n个分量1个约束→n−1连续自由度 — 正确</li>
+    <li><strong>梯度分解</strong>：∇f=‖∇f‖×u_max，即(3,4)=5×(3/5,4/5) — 正确</li>
+  </ul>
+
+  <div class="box-sum">
+    <div class="t">结论</div>
+    <p>源文件中全部数学计算、公式推导和逻辑表述均正确无误，可以安全地作为学习材料使用。</p>
+  </div>
+
+  <!-- 核心案例图示 -->
+  <h2>二、核心案例：梯度 (3,4) 与 3-4-5 三角形</h2>
+
+  <p>全文以 f(x,y)=3x+4y 为核心案例。这个函数的偏导数处处为 fₓ=3、fᵧ=4，因此梯度恒为 ∇f=(3,4)。梯度长度为 √(3²+4²)=5，恰好构成一个经典的 <span class="hl-g">3-4-5 勾股三角形</span>。</p>
+
+  <div class="viz">
+    <div class="vt">梯度 (3,4) 的分量构成与 3-4-5 直角三角形</div>
+    <svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background grid -->
+      <defs>
+        <pattern id="grid1" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e8e2d9" stroke-width="1"/>
+        </pattern>
+        <marker id="arrBlue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#2563eb"/>
+        </marker>
+        <marker id="arrOrange" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#ea580c"/>
+        </marker>
+        <marker id="arrGreen" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <polygon points="0,0 8,4 0,8" fill="#16a34a"/>
+        </marker>
+      </defs>
+      <rect width="480" height="320" fill="url(#grid1)" opacity="0.5"/>
+
+      <!-- Axes -->
+      <line x1="60" y1="270" x2="440" y2="270" stroke="#6b655d" stroke-width="2" marker-end="url(#arrAxis)"/>
+      <line x1="60" y1="270" x2="60" y2="30" stroke="#6b655d" stroke-width="2" marker-end="url(#arrAxis)"/>
+      <text x="445" y="278" font-size="14" fill="#6b655d" font-weight="600">x</text>
+      <text x="52" y="28" font-size="14" fill="#6b655d" font-weight="600">y</text>
+      <text x="45" y="285" font-size="13" fill="#9c948a">O</text>
+
+      <!-- Tick marks on x axis -->
+      <g font-size="11" fill="#9c948a" text-anchor="middle">
+        <line x1="180" y1="268" x2="180" y2="272" stroke="#6b655d" stroke-width="1.5"/><text x="180" y="288">3</text>
+        <line x1="300" y1="268" x2="300" y2="272" stroke="#6b655d" stroke-width="1.5"/><text x="300" y="288">5(投影)</text>
+      </g>
+      <!-- Tick marks on y axis -->
+      <g font-size="11" fill="#9c948a" text-anchor="end">
+        <line x1="58" y1="190" x2="62" y2="190" stroke="#6b655d" stroke-width="1.5"/><text x="54" y="194">4</text>
+      </g>
+
+      <!-- Triangle: O(60,270) -> A(60+120, 270) -> B(60+120, 270-160) -->
+      <!-- x side (blue): from O to (180, 270), length 120px = 3 units (40px/unit) -->
+      <line x1="60" y1="270" x2="180" y2="270" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>
+      <text x="120" y="262" text-anchor="middle" font-size="15" fill="#2563eb" font-weight="700">x偏导 = 3</text>
+
+      <!-- y side (orange): from (180,270) to (180, 110), length 160px = 4 units -->
+      <line x1="180" y1="270" x2="180" y2="110" stroke="#ea580c" stroke-width="6" stroke-linecap="round"/>
+      <text x="195" y="195" font-size="15" fill="#ea580c" font-weight="700">y偏导 = 4</text>
+
+      <!-- Hypotenuse (green): from O(60,270) to (180,110), length = sqrt(120^2+160^2)=200 = 5 units -->
+      <line x1="60" y1="270" x2="180" y2="110" stroke="#16a34a" stroke-width="6" stroke-linecap="round"/>
+      <text x="85" y="175" font-size="15" fill="#16a34a" font-weight="700" transform="rotate(-53 85 175)">梯度长度 = 5</text>
+
+      <!-- Right angle mark -->
+      <path d="M 168 270 L 168 258 L 180 258" fill="none" stroke="#2d2a26" stroke-width="1.5"/>
+
+      <!-- Gradient vector arrow -->
+      <line x1="60" y1="270" x2="176" y2="114" stroke="#16a34a" stroke-width="3" marker-end="url(#arrGreen)" opacity="0.5"/>
+      <text x="60" y="270" font-size="12" fill="#15803d">∇f=(3,4)</text>
+
+      <!-- Formula annotation -->
+      <text x="280" y="50" font-size="16" fill="#2d2a26" font-weight="700">勾股定理验证</text>
+      <text x="280" y="75" font-size="14" fill="#6b655d">3² + 4² = 9 + 16 = 25</text>
+      <text x="280" y="98" font-size="14" fill="#6b655d">√25 = 5 = ‖∇f‖</text>
+      <text x="280" y="130" font-size="13" fill="#16a34a" font-weight="600">→ 梯度长度 = 最大变化率</text>
+    </svg>
+  </div>
+
+  <p>两个偏导数 3 和 4 分别沿 x、y 坐标轴方向，互相正交。它们的合向量就是梯度 (3,4)，长度为斜边 5。这个 5 同时也是沿梯度方向的最大方向导数。</p>
+
+  <!-- 方向导数与角度 -->
+  <h2>三、方向导数与角度的关系</h2>
+
+  <p>任意单位方向 u=(cosα, sinα) 的方向导数为：</p>
+  <div class="formula">D<sub>u</sub>f = 3cosα + 4sinα = ‖∇f‖cosθ = 5cosθ</div>
+  <p>其中 θ 是所选方向与梯度方向之间的夹角。当 θ=0（同方向），变化率最大为 5；当 θ=90°（垂直），变化率为 0；当 θ=180°（反方向），变化率为 −5。</p>
+
+  <div class="viz">
+    <div class="vt">方向导数 5cosθ 随角度变化的关系</div>
+    <svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+      <!-- Axes -->
+      <line x1="50" y1="130" x2="470" y2="130" stroke="#6b655d" stroke-width="1.5"/>
+      <line x1="50" y1="230" x2="50" y2="30" stroke="#6b655d" stroke-width="1.5"/>
+
+      <!-- Axis labels -->
+      <text x="475" y="135" font-size="12" fill="#6b655d">θ</text>
+      <text x="45" y="25" font-size="12" fill="#6b655d" text-anchor="end">D</text>
+
+      <!-- Tick marks -->
+      <g font-size="11" fill="#9c948a" text-anchor="middle">
+        <text x="100" y="148">0°</text>
+        <text x="175" y="148">90°</text>
+        <text x="260" y="148">180°</text>
+        <text x="345" y="148">270°</text>
+        <text x="420" y="148">360°</text>
+      </g>
+      <g font-size="11" fill="#9c948a" text-anchor="end">
+        <line x1="48" y1="50" x2="52" y2="50" stroke="#6b655d"/><text x="44" y="54">5</text>
+        <line x1="48" y1="90" x2="52" y2="90" stroke="#6b655d"/><text x="44" y="94">2.5</text>
+        <text x="44" y="134">0</text>
+        <line x1="48" y1="170" x2="52" y2="170" stroke="#6b655d"/><text x="44" y="174">-2.5</text>
+        <line x1="48" y1="210" x2="52" y2="210" stroke="#6b655d"/><text x="44" y="214">-5</text>
+      </g>
+
+      <!-- Zero line -->
+      <line x1="50" y1="130" x2="470" y2="130" stroke="#d4ccbf" stroke-width="1" stroke-dasharray="3 3"/>
+
+      <!-- Sine-like curve: 5cos(theta), theta from 0 to 2pi -->
+      <!-- Map: theta 0->x=100, 2pi->x=420, so x = 100 + theta*51 -->
+      <!-- D = 5*cos(theta), y = 130 - D*16 -->
+      <path d="M 100 50 Q 137 50 175 130 T 260 210 T 345 130 T 420 50"
+            fill="none" stroke="#2563eb" stroke-width="3"/>
+
+      <!-- Key points -->
+      <!-- theta=0: D=5, point (100, 50) -->
+      <circle cx="100" cy="50" r="6" fill="#16a34a" stroke="#fff" stroke-width="2"/>
+      <text x="100" y="42" text-anchor="middle" font-size="12" fill="#15803d" font-weight="700">max=5</text>
+
+      <!-- theta=90: D=0, point (175, 130) -->
+      <circle cx="175" cy="130" r="5" fill="#9c948a" stroke="#fff" stroke-width="1.5"/>
+      <text x="175" y="118" text-anchor="middle" font-size="11" fill="#6b655d">0</text>
+
+      <!-- theta=180: D=-5, point (260, 210) -->
+      <circle cx="260" cy="210" r="6" fill="#be123c" stroke="#fff" stroke-width="2"/>
+      <text x="260" y="228" text-anchor="middle" font-size="12" fill="#9f1239" font-weight="700">min=-5</text>
+
+      <!-- theta=270: D=0, point (345, 130) -->
+      <circle cx="345" cy="130" r="5" fill="#9c948a" stroke="#fff" stroke-width="1.5"/>
+      <text x="345" y="118" text-anchor="middle" font-size="11" fill="#6b655d">0</text>
+
+      <!-- theta=360: D=5, point (420, 50) -->
+      <circle cx="420" cy="50" r="6" fill="#16a34a" stroke="#fff" stroke-width="2"/>
+
+      <!-- Annotations -->
+      <text x="120" y="185" font-size="11" fill="#16a34a">梯度方向</text>
+      <text x="240" y="185" font-size="11" fill="#be123c">反方向</text>
+      <text x="160" y="100" font-size="11" fill="#6b655d">垂直方向</text>
+    </svg>
+  </div>
+
+  <!-- 单位圆 -->
+  <h2>四、单位圆上的所有方向</h2>
+
+  <p>对于二维输入 f(x,y)，所有单位方向 u=(cosθ, sinθ) 的终点构成单位圆。梯度方向 (3/5, 4/5) 落在圆周上，表示上升最快的方向。</p>
+
+  <div class="viz">
+    <div class="vt">单位圆上的方向与对应方向导数</div>
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background -->
+      <rect width="400" height="400" fill="white"/>
+
+      <!-- Axes -->
+      <line x1="50" y1="200" x2="350" y2="200" stroke="#6b655d" stroke-width="1.5"/>
+      <line x1="200" y1="50" x2="200" y2="350" stroke="#6b655d" stroke-width="1.5"/>
+      <text x="355" y="205" font-size="14" fill="#6b655d">x</text>
+      <text x="205" y="45" font-size="14" fill="#6b655d">y</text>
+
+      <!-- Unit circle: center (200,200), radius 120 -->
+      <circle cx="200" cy="200" r="120" fill="none" stroke="#9c948a" stroke-width="2" stroke-dasharray="5 4"/>
+
+      <!-- Tick marks -->
+      <g font-size="11" fill="#9c948a">
+        <line x1="318" y1="197" x2="318" y2="203" stroke="#6b655d"/><text x="318" y="218" text-anchor="middle">1</text>
+        <line x1="197" y1="82" x2="203" y2="82" stroke="#6b655d"/><text x="212" y="86">1</text>
+      </g>
+
+      <!-- Gradient direction: (3/5, 4/5) = (0.6, 0.8) -->
+      <!-- Point on circle: (200+72, 200-96) = (272, 104) -->
+      <line x1="200" y1="200" x2="272" y2="104" stroke="#16a34a" stroke-width="4" marker-end="url(#arrG2)"/>
+      <circle cx="272" cy="104" r="7" fill="#16a34a" stroke="#fff" stroke-width="2"/>
+      <text x="282" y="100" font-size="13" fill="#15803d" font-weight="700">u_max=(3/5,4/5)</text>
+      <text x="282" y="116" font-size="12" fill="#16a34a">D=5 (最大)</text>
+
+      <!-- x-axis direction: (1,0), point (320, 200) -->
+      <line x1="200" y1="200" x2="312" y2="200" stroke="#2563eb" stroke-width="3" marker-end="url(#arrB2)"/>
+      <circle cx="320" cy="200" r="6" fill="#2563eb" stroke="#fff" stroke-width="2"/>
+      <text x="325" y="195" font-size="12" fill="#1e40af" font-weight="600">e_x=(1,0)</text>
+      <text x="325" y="210" font-size="11" fill="#2563eb">D=3</text>
+
+      <!-- y-axis direction: (0,1), point (200, 80) -->
+      <line x1="200" y1="200" x2="200" y2="88" stroke="#ea580c" stroke-width="3" marker-end="url(#arrO2)"/>
+      <circle cx="200" cy="80" r="6" fill="#ea580c" stroke="#fff" stroke-width="2"/>
+      <text x="125" y="75" font-size="12" fill="#9a3412" font-weight="600">e_y=(0,1)</text>
+      <text x="135" y="90" font-size="11" fill="#ea580c">D=4</text>
+
+      <!-- Anti-gradient: (-3/5, -4/5), point (128, 296) -->
+      <line x1="200" y1="200" x2="128" y2="296" stroke="#be123c" stroke-width="3" marker-end="url(#arrR2)"/>
+      <circle cx="128" cy="296" r="7" fill="#be123c" stroke="#fff" stroke-width="2"/>
+      <text x="40" y="305" font-size="12" fill="#9f1239" font-weight="600">u_min=(-3/5,-4/5)</text>
+      <text x="55" y="320" font-size="11" fill="#be123c">D=-5 (最小)</text>
+
+      <!-- Perpendicular direction: (4/5, -3/5), point (296, 272) -->
+      <line x1="200" y1="200" x2="290" y2="268" stroke="#9c948a" stroke-width="2.5" stroke-dasharray="5 3" marker-end="url(#arrGr2)"/>
+      <circle cx="296" cy="272" r="5" fill="#9c948a" stroke="#fff" stroke-width="1.5"/>
+      <text x="300" y="282" font-size="11" fill="#6b655d">垂直方向</text>
+      <text x="300" y="296" font-size="11" fill="#9c948a">D=0</text>
+
+      <!-- Angle annotation: arctan(4/3) ≈ 53° -->
+      <path d="M 225 200 A 25 25 0 0 0 219 184" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="3 2"/>
+      <text x="230" y="190" font-size="11" fill="#15803d" font-weight="600">θ≈53°</text>
+
+      <defs>
+        <marker id="arrG2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#16a34a"/></marker>
+        <marker id="arrB2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#2563eb"/></marker>
+        <marker id="arrO2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#ea580c"/></marker>
+        <marker id="arrR2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#be123c"/></marker>
+        <marker id="arrGr2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#9c948a"/></marker>
+      </defs>
+    </svg>
+  </div>
+
+  <!-- 变化率 vs 变化量 -->
+  <h2>五、"变化率"与"变化量"的区分</h2>
+
+  <p>源文件中一个关键纠正：导数（包括偏导数和方向导数）描述的是<span class="hl">瞬时变化率</span>，不是变化值本身。要得到实际变化量，必须乘以移动距离。</p>
+
+  <div class="comparison">
+    <div class="comp-card ok">
+      <div class="ct">变化率（导数）</div>
+      <p>D<sub>u</sub>f = ∇f·u<br><br>含义：沿方向 u 每走 1 单位，f 瞬时变化多少。<br><br>单位：[f的单位]/[距离的单位]</p>
+    </div>
+    <div class="comp-card ok" style="border-color: var(--orange); border-width: 2px;">
+      <div class="ct" style="color: var(--orange-d);">变化量（Δf）</div>
+      <p>Δf ≈ h · D<sub>u</sub>f = h · ∇f·u<br><br>含义：实际走 h 单位后，f 大约变化多少。<br><br>单位：[f的单位]</p>
+    </div>
+  </div>
+
+  <p>类比：方向导数是"速度"（每秒多少米），移动距离 h 是"时间"（秒），变化量 Δf 是"路程"（米）。速度×时间=路程。</p>
+
+  <!-- df vs Δf -->
+  <h2>六、df 与 Δf：切线预测与真实变化</h2>
+
+  <p>df 是用切线/切平面对函数变化的<span class="hl-o">线性预测</span>，Δf 是<span class="hl-g">真实变化</span>。对于线性函数 f(x,y)=3x+4y，二者严格相等；对于非线性函数，变化越小二者越接近。</p>
+
+  <div class="viz">
+    <div class="vt">f(x)=x² 在 x=1 处：切线预测 df vs 真实变化 Δf</div>
+    <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Axes -->
+      <line x1="50" y1="250" x2="470" y2="250" stroke="#6b655d" stroke-width="1.5"/>
+      <line x1="50" y1="250" x2="50" y2="20" stroke="#6b655d" stroke-width="1.5"/>
+      <text x="475" y="255" font-size="12" fill="#6b655d">x</text>
+      <text x="45" y="15" font-size="12" fill="#6b655d">f</text>
+
+      <!-- Curve y=x², mapped: x=1 -> (150,200), x=2 -> (300,50), scale: x: 150px/unit, y: 150px/unit² -->
+      <!-- f(x) = x², x from 0.5 to 2.2 -->
+      <!-- At x=1, f=1 -> screen y = 250-150 = 100... let me recalculate -->
+      <!-- Let's use: x_pixel = 80 + x*100, y_pixel = 250 - f*100 -->
+      <!-- x=0.5: f=0.25, (130, 225) -->
+      <!-- x=0.8: f=0.64, (160, 186) -->
+      <!-- x=1.0: f=1.0, (180, 150) -->
+      <!-- x=1.1: f=1.21, (190, 129) -->
+      <!-- x=1.5: f=2.25, (230, 25) too high... -->
+      <!-- Let me use smaller scale: y_pixel = 250 - f*80 -->
+      <!-- x=0.5: f=0.25, y=230 -->
+      <!-- x=0.8: f=0.64, y=199 -->
+      <!-- x=1.0: f=1.0, y=170 -->
+      <!-- x=1.1: f=1.21, y=153 -->
+      <!-- x=1.2: f=1.44, y=135 -->
+      <!-- x=1.3: f=1.69, y=115 -->
+      <!-- x=1.5: f=2.25, y=70 -->
+      <!-- x=2.0: f=4.0, y=-70 too high -->
+
+      <!-- Use scale: x_pixel = 80 + x*100, y_pixel = 250 - (f-0.5)*120 -->
+      <!-- x=0.5: f=0.25, y = 250-(-0.25*120) = 280... no -->
+      <!-- Let me try: baseline at f=0.25 -> y=240, scale 100px per unit of f -->
+      <!-- y = 240 - (f - 0.25) * 100 -->
+      <!-- x=0.5: f=0.25, y=240 -->
+      <!-- x=0.8: f=0.64, y=201 -->
+      <!-- x=1.0: f=1.0, y=165 -->
+      <!-- x=1.1: f=1.21, y=144 -->
+      <!-- x=1.2: f=1.44, y=121 -->
+      <!-- x=1.3: f=1.69, y=96 -->
+      <!-- x=1.5: f=2.25, y=40 -->
+      <!-- x=1.8: f=3.24, y=-59 too high -->
+
+      <!-- OK use scale 70px per unit, baseline f=0.25->y=235 -->
+      <!-- y = 235 - (f-0.25)*70 -->
+      <!-- x=0.5: y=235 -->
+      <!-- x=0.8: f=0.64, y=207.8 -->
+      <!-- x=1.0: f=1.0, y=182.5 -->
+      <!-- x=1.1: f=1.21, y=167.8 -->
+      <!-- x=1.2: f=1.44, y=151.7 -->
+      <!-- x=1.3: f=1.69, y=134.2 -->
+      <!-- x=1.5: f=2.25, y=95 -->
+      <!-- x=1.7: f=2.89, y=50.2 -->
+      <!-- x=2.0: f=4.0, y=-27.5 too high -->
+      <!-- x=1.8: f=3.24, y=38.7 -->
+
+      <!-- Curve -->
+      <path d="M 130 235 Q 155 222 160 208 Q 175 192 180 183 Q 185 175 190 168 Q 195 160 200 152 Q 210 139 220 122 Q 235 97 250 65 Q 265 38 280 15"
+            fill="none" stroke="#7c3aed" stroke-width="2.5"/>
+
+      <!-- Tangent line at x=1: slope=2, passes through (180, 182.5) -->
+      <!-- At x=1.1 (190): tangent y = 182.5 - 2*10*0.7 = 182.5-14=168.5 -->
+      <!-- Actually: y_tangent = 182.5 - (x-1)*100*0.7 -->
+      <!-- x=1.0: y=182.5, x=1.3: y=182.5-21=161.5, x=1.5: y=182.5-35=147.5 -->
+      <line x1="130" y1="217.5" x2="280" y2="112.5" stroke="#ea580c" stroke-width="2" stroke-dasharray="6 4"/>
+
+      <!-- Point at x=1 -->
+      <circle cx="180" cy="182.5" r="5" fill="#7c3aed" stroke="#fff" stroke-width="2"/>
+      <text x="145" y="180" font-size="12" fill="#7c3aed" font-weight="600">x=1, f=1</text>
+
+      <!-- Point at x=1.1 on curve (real) -->
+      <circle cx="190" cy="167.8" r="5" fill="#16a34a" stroke="#fff" stroke-width="2"/>
+      <text x="195" y="160" font-size="11" fill="#15803d" font-weight="600">真实 f(1.1)=1.21</text>
+
+      <!-- Point at x=1.1 on tangent (prediction) -->
+      <circle cx="190" cy="175.5" r="4" fill="#ea580c" stroke="#fff" stroke-width="1.5"/>
+      <text x="195" y="195" font-size="11" fill="#9a3412">切线预测 df=0.2</text>
+
+      <!-- Vertical dashed lines -->
+      <line x1="190" y1="182.5" x2="190" y2="167.8" stroke="#16a34a" stroke-width="2" stroke-dasharray="4 3"/>
+      <line x1="190" y1="182.5" x2="190" y2="175.5" stroke="#ea580c" stroke-width="2" stroke-dasharray="4 3"/>
+
+      <!-- Gap annotation -->
+      <line x1="190" y1="167.8" x2="190" y2="175.5" stroke="#be123c" stroke-width="1.5"/>
+      <text x="215" y="175" font-size="11" fill="#9f1239">差=0.01</text>
+
+      <!-- Labels -->
+      <text x="130" y="25" font-size="13" fill="#7c3aed" font-weight="700">f(x) = x² （真实曲线）</text>
+      <text x="290" y="110" font-size="12" fill="#ea580c" font-weight="600">切线（线性预测）</text>
+
+      <!-- Δx annotation -->
+      <line x1="180" y1="260" x2="190" y2="260" stroke="#6b655d" stroke-width="1.5" marker-end="url(#arrAxisX)"/>
+      <text x="180" y="275" font-size="11" fill="#6b655d" text-anchor="middle">Δx=0.1</text>
+
+      <defs>
+        <marker id="arrAxisX" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0,0 6,3 0,6" fill="#6b655d"/></marker>
+      </defs>
+    </svg>
+  </div>
+
+  <p>当 Δx=0.1 时：Δf=0.21（真实），df=0.2（预测），差 0.01。当 Δx=0.001 时：Δf=0.002001，df=0.002，差仅 0.000001。变化越小，切线预测越精确。</p>
+
+  <!-- n-1 自由度 -->
+  <h2>七、方向向量分量与自由度</h2>
+
+  <p>方向向量有 n 个分量（属于 ℝⁿ），但单位长度条件 ‖u‖=1 提供一个约束，使所有单位方向只有 n−1 个连续自由度。</p>
+
+  <div class="viz">
+    <div class="vt">n=2 时：2 个分量，1 个约束，1 个自由度（单位圆 S¹）</div>
+    <svg viewBox="0 0 440 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Left: free components -->
+      <g transform="translate(20, 20)">
+        <text x="80" y="15" text-anchor="middle" font-size="13" fill="#2d2a26" font-weight="600">分量（2个）</text>
+        <rect x="10" y="30" width="60" height="50" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="40" y="60" text-anchor="middle" font-size="14" fill="#1e40af" font-weight="700">u₁</text>
+        <text x="40" y="95" text-anchor="middle" font-size="11" fill="#2563eb">自由</text>
+        <rect x="90" y="30" width="60" height="50" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+        <text x="120" y="60" text-anchor="middle" font-size="14" fill="#1e40af" font-weight="700">u₂</text>
+        <text x="120" y="95" text-anchor="middle" font-size="11" fill="#2563eb">自由</text>
+      </g>
+
+      <!-- Middle: constraint -->
+      <g transform="translate(200, 30)">
+        <text x="40" y="5" text-anchor="middle" font-size="12" fill="#9c948a">约束</text>
+        <rect x="0" y="15" width="80" height="50" rx="8" fill="#ffe4e6" stroke="#be123c" stroke-width="2"/>
+        <text x="40" y="38" text-anchor="middle" font-size="12" fill="#9f1239" font-weight="600">u₁²+u₂²</text>
+        <text x="40" y="55" text-anchor="middle" font-size="12" fill="#9f1239" font-weight="600">= 1</text>
+        <text x="40" y="85" text-anchor="middle" font-size="11" fill="#be123c">吃掉1个</text>
+      </g>
+
+      <!-- Right: result -->
+      <g transform="translate(310, 20)">
+        <text x="60" y="15" text-anchor="middle" font-size="13" fill="#2d2a26" font-weight="600">自由度</text>
+        <rect x="10" y="30" width="100" height="50" rx="8" fill="#bbf7d0" stroke="#16a34a" stroke-width="2"/>
+        <text x="60" y="60" text-anchor="middle" font-size="20" fill="#15803d" font-weight="800">1</text>
+        <text x="60" y="95" text-anchor="middle" font-size="11" fill="#16a34a">= 2 − 1</text>
+        <!-- Arrow -->
+        <line x1="120" y1="55" x2="140" y2="55" stroke="#6b655d" stroke-width="2" marker-end="url(#arrRes)"/>
+      </g>
+
+      <defs>
+        <marker id="arrRes" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#6b655d"/></marker>
+      </defs>
+    </svg>
+  </div>
+
+  <table>
+    <tr><th>维度 n</th><th>分量个数</th><th>约束方程</th><th>连续自由度</th><th>几何形状</th></tr>
+    <tr><td>2</td><td>2</td><td>u₁²+u₂²=1</td><td>1</td><td>单位圆 S¹（一维曲线）</td></tr>
+    <tr><td>3</td><td>3</td><td>u₁²+u₂²+u₃²=1</td><td>2</td><td>单位球面 S²（二维曲面）</td></tr>
+    <tr><td>n</td><td>n</td><td>u₁²+...+uₙ²=1</td><td>n−1</td><td>单位球面 Sⁿ⁻¹</td></tr>
+  </table>
+
+  <!-- 统一公式 -->
+  <h2>八、统一公式</h2>
+
+  <p>整个文档的核心可以浓缩为一个公式，将导数、偏导数、方向导数、梯度、变化量全部串联起来：</p>
+
+  <div class="formula-core">
+    <div class="label">统一公式</div>
+    <div class="body">Δf ≈ h · D<sub>u</sub>f = h · (∇f · u)</div>
+    <div class="desc">选择方向 u → 梯度点乘方向得变化率 → 乘以距离得变化量</div>
+  </div>
+
+  <p>展开来看：</p>
+  <ol>
+    <li><strong>∇f = (fₓ, fᵧ)</strong>：偏导数组成梯度，是所有方向变化率的"信息源"</li>
+    <li><strong>u</strong>：单位方向，有 n 个分量但只有 n−1 个自由度</li>
+    <li><strong>D<sub>u</sub>f = ∇f · u</strong>：方向导数，沿 u 方向每走1单位的瞬时变化率</li>
+    <li><strong>h</strong>：实际移动距离</li>
+    <li><strong>Δf ≈ h · D<sub>u</sub>f</strong>：变化量 = 距离 × 变化率</li>
+  </ol>
+
+  <div class="box-tip">
+    <div class="t">梯度同时携带两个信息</div>
+    <p>梯度 = 最大方向导数 × 最快上升单位方向，即 (3,4) = 5 × (3/5, 4/5)。朝向回答"往哪里最快"，长度回答"最快能变化多快"。</p>
+  </div>
+
+  <!-- 结论 -->
+  <h2>九、结论</h2>
+
+  <p>源文件以 f(x,y)=3x+4y 为案例，系统地讲解了从偏导数到方向导数、梯度、自由度和全微分的完整知识链。经逐条验算，全部数学计算和逻辑推导均正确无误。</p>
+
+  <p>文档的核心贡献在于：</p>
+  <ul>
+    <li><strong>区分"变化率"与"变化量"</strong>：导数是速率，Δf≈h×D 才是变化量</li>
+    <li><strong>澄清"n−1"的精确含义</strong>：方向向量有 n 个分量，但单位方向的集合只有 n−1 个连续自由度</li>
+    <li><strong>解释 3-4-5 三角形的双重意义</strong>：梯度长度5既是向量的模，也是最大方向导数</li>
+    <li><strong>区分 df 与 Δf</strong>：切线预测与真实变化，线性函数严格相等，非线性函数近似相等</li>
+    <li><strong>梯度分解</strong>：∇f = ‖∇f‖ × u_max，同时编码"最快方向"和"最快速率"</li>
+  </ul>
+
+  <div class="box-sum" style="margin-top: 28px;">
+    <div class="t">一句话总结</div>
+    <p>∇f=(3,4)：方向看 (3,4)，最快变化率看它的长度 √(3²+4²)=5；任意方向的变化率 = 5cosθ；实际变化量 = h × 5cosθ。</p>
+  </div>
+</div>
+</body>
+</html>

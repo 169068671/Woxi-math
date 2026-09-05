@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>方向导数：九宫格微变化实验室</title>
+  <style>
+    :root{
+      --paper:#fbfaf7;--surface:#fff;--ink:#10213f;--muted:#667085;--line:#d9dee8;
+      --blue:#2878c8;--orange:#f15a24;--green:#16835f;--red:#b23a48;--soft-blue:#eef7ff;
+      --shadow:0 10px 30px rgba(16,33,63,.06);--r:16px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.55}
+    button,input,select{font:inherit;color:inherit} button{cursor:pointer}
+    .page{width:min(1420px,calc(100% - 32px));margin:auto;padding:28px 0 64px}
+    header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:20px}
+    h1{font-size:clamp(28px,3.4vw,49px);line-height:1.15;letter-spacing:-.035em;margin:0 0 8px;max-width:980px}
+    header p{margin:0;color:var(--muted);font-size:17px}
+    .reset,.quiz button{border:1px solid var(--line);background:white;border-radius:10px;padding:10px 15px;font-weight:700;white-space:nowrap}
+    .controls{display:grid;grid-template-columns:1.35fr 1.25fr 1.5fr 1.5fr;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px 8px;margin-bottom:16px}
+    .control{padding:0 18px;border-right:1px solid var(--line);min-width:0}.control:last-child{border:0}
+    .control label{display:block;font-size:13px;font-weight:800;margin-bottom:8px}.control .row{display:flex;align-items:center;gap:9px}
+    select,input[type=number]{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;padding:9px 10px}
+    input[type=range]{width:100%;accent-color:var(--orange)}
+    .range-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:2px}.control-hint{color:var(--muted);font-size:10px;margin-top:4px;line-height:1.35}
+    .mono{font-family:"SFMono-Regular",Consolas,monospace;font-variant-numeric:tabular-nums}
+    .main{display:grid;grid-template-columns:minmax(0,2fr) minmax(310px,.82fr);gap:16px;align-items:start}
+    .lab,.insight,.explain,.bridge,.quiz{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+    .lab{padding:18px}.section-title{display:flex;justify-content:space-between;align-items:end;gap:14px;margin-bottom:12px}
+    h2{font-size:22px;margin:0;letter-spacing:-.02em}.section-title p{margin:0;color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .dir-card{position:relative;min-height:205px;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;padding:0;text-align:left;transition:.18s transform,.18s border-color,.18s box-shadow}
+    .dir-card:hover{transform:translateY(-2px);border-color:#9cb6d1}.dir-card:focus-visible{outline:3px solid rgba(40,120,200,.25);outline-offset:2px}
+    .dir-card.selected{border:2px solid var(--orange);box-shadow:0 0 0 3px rgba(241,90,36,.1)}
+    .dir-card canvas{display:block;width:100%;height:112px;background:#fcfdff;border-bottom:1px solid var(--line)}
+    .dir-head{position:absolute;top:8px;left:10px;z-index:2;font-weight:900;font-size:14px;text-shadow:0 1px white}
+    .dir-card.selected .dir-head{color:var(--orange)}
+    .metrics{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:9px 12px;font-size:12px}
+    .metrics .value{text-align:right;font-family:"SFMono-Regular",Consolas,monospace;font-weight:700}
+    .positive{color:var(--orange)}.negative{color:var(--green)}.neutral{color:var(--muted)}
+    .center-card{display:grid;place-items:center;min-height:205px;border:1px solid var(--line);border-radius:12px;background:radial-gradient(circle at center,#fff 0 3px,transparent 4px),repeating-radial-gradient(circle at center,transparent 0 20px,#d8e9f8 21px 22px);text-align:center}
+    .center-card b{display:block;font-size:20px}.center-card span{color:var(--muted);font-size:13px}
+    .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;color:var(--muted);font-size:12px}.key{display:flex;align-items:center;gap:6px}.line-key{width:28px;border-top:3px solid}
+    .insight{padding:18px;position:sticky;top:12px}.compass{height:190px;border-bottom:1px solid var(--line);margin:8px 0 2px}.compass svg{width:100%;height:100%}
+    .readout{padding:13px 2px;border-bottom:1px solid var(--line)}.readout:last-of-type{border:0}
+    .readout small{display:block;color:var(--muted);font-weight:700}.big{font-size:28px;line-height:1.2;margin-top:3px}
+    .limit{border:1px solid #a8d4c4;background:#f2fbf7;border-radius:12px;padding:14px;margin-top:12px}.limit .big{color:var(--green)}
+    .micro{margin-top:12px;border:1px solid #bfd8ef;background:var(--soft-blue);border-radius:12px;padding:13px;font-size:13px}.micro b{display:block;margin-bottom:5px}.micro-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.micro-grid div{background:white;border-radius:7px;padding:6px 8px}
+    .detail-link{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:11px 13px;border:1px solid #f1b39b;border-radius:10px;background:#fff8f3;color:#b93e13;text-decoration:none;font-size:13px;font-weight:800}.detail-link:hover{background:#fff1e8}
+    .xy-note{margin-top:16px;padding:16px 18px;background:#fff8f2;border-left:4px solid var(--orange);border-radius:0 12px 12px 0}.xy-note strong{display:block;margin-bottom:4px}.xy-note p{margin:0;font-size:13px;color:#5b6475}
+    .explain{margin-top:16px;padding:22px;background:linear-gradient(90deg,#f3f9ff,#fff)}
+    .explain h2{text-align:center;margin-bottom:18px}.formula-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:14px}
+    .formula-step{text-align:center}.formula-step small{display:block;color:var(--muted);margin-bottom:6px}.math{font-family:Georgia,"Times New Roman",serif;font-size:clamp(17px,2vw,25px)}.arrow{font-size:26px;color:#8aa2bd}
+    .meaning{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.meaning div{border-top:3px solid #cde0f3;padding:9px 4px;font-size:13px}.meaning b{display:block;color:var(--blue)}
+    .bridge{margin-top:16px;padding:22px}.bridge-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center}.map,.surface{min-height:180px;background:#fbfdff;border:1px solid var(--line);border-radius:12px;padding:12px}.bridge svg{width:100%;height:145px}.bridge .arrow{font-size:32px}
+    .bridge h3{margin:0 0 4px;font-size:16px}.bridge p{margin:0;color:var(--muted);font-size:13px}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:16px}.step{background:white;padding:20px}.step .n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--blue);color:white;font-weight:900;margin-right:7px}.step b{font-size:16px}.step p{margin:8px 0 0;color:var(--muted);font-size:13px}
+    .quiz{margin-top:16px;padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}.quiz h2{margin-bottom:6px}.quiz p{margin:0 0 12px;color:var(--muted)}
+    .options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.option{border:1px solid var(--line);background:#fff;border-radius:10px;padding:12px 8px;text-align:center}.option.correct{border:2px solid var(--orange);color:var(--orange);font-weight:800}
+    .answer{display:none;background:#f1fbf7;border:1px solid #b7dfd0;border-radius:12px;padding:16px}.answer.show{display:block}.answer b{color:var(--green)}
+    footer{text-align:center;color:var(--muted);font-size:12px;margin-top:22px}
+    @media(max-width:980px){.controls{grid-template-columns:1fr 1fr}.control:nth-child(2){border-right:0}.control{padding:10px 14px}.main{grid-template-columns:1fr}.insight{position:static}.grid{gap:7px}.dir-card,.center-card{min-height:190px}.formula-flow{grid-template-columns:1fr}.formula-flow .arrow{transform:rotate(90deg)}.meaning{grid-template-columns:1fr 1fr}}
+    @media(max-width:650px){.page{width:min(100% - 18px,1420px);padding-top:16px}header{display:block}.reset{margin-top:14px}.controls{grid-template-columns:1fr}.control{border-right:0;border-bottom:1px solid var(--line)}.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.lab{padding:9px}.dir-card,.center-card{min-height:164px}.dir-card canvas{height:78px}.dir-head{font-size:11px;left:5px}.metrics{padding:6px;font-size:9px;grid-template-columns:1fr}.metrics .value{text-align:left}.bridge-grid,.quiz{grid-template-columns:1fr}.bridge-grid>.arrow{transform:rotate(90deg);text-align:center}.steps{grid-template-columns:1fr}.options{grid-template-columns:1fr 1fr}.section-title{display:block}.section-title p{margin-top:4px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<main class="page">
+  <header>
+    <div><h1>方向导数：朝这边走，海拔变化有多快？</h1><p>固定起点，只改一个小变量，看清方向如何改变坡度。</p></div>
+    <button class="reset" id="reset">↻ 重置实验</button>
+  </header>
+
+  <section class="controls" aria-label="实验控制台">
+    <div class="control"><label for="fn">函数地形</label><select id="fn"><option value="bowl">圆碗　f=(x²+y²)/4</option><option value="saddle">马鞍　f=(x²−y²)/4</option><option value="plane">斜坡　f=0.6x−0.3y</option></select></div>
+    <div class="control"><label>起点 P=(x₀,y₀)</label><div class="row"><input id="px" type="number" min="-2" max="2" step="0.1" value="1" aria-label="起点x坐标"><input id="py" type="number" min="-2" max="2" step="0.1" value="1" aria-label="起点y坐标"></div></div>
+    <div class="control"><label for="h">步长 h（人为选择）：<span class="mono" id="hLabel">0.500</span></label><input id="h" type="range" min="0" max="100" value="35"><div class="range-labels"><span>无限小</span><span>大步</span></div><div class="control-hint">不是函数算出的结果；拖动它，观察平均坡度怎样逼近极限。</div></div>
+    <div class="control"><label for="theta">拖动方向 θ：<span class="mono" id="thetaLabel">45°</span></label><input id="theta" type="range" min="0" max="360" value="45" step="1"><div class="range-labels"><span>0° 向右</span><span>逆时针旋转</span></div></div>
+  </section>
+
+  <section class="main">
+    <div class="lab">
+      <div class="section-title"><h2>同一个起点，九个微小变化</h2><p>点击任意方向；所有格子都使用同一个 h，才可以公平比较。</p></div>
+      <div class="grid" id="grid"></div>
+      <div class="legend"><span class="key"><i class="line-key" style="border-color:var(--orange)"></i>上升（正）</span><span class="key"><i class="line-key" style="border-color:var(--green)"></i>下降（负）</span><span class="key"><i class="line-key" style="border-color:#98a2b3"></i>几乎不变（约 0）</span></div>
+      <div class="xy-note"><strong>关键澄清：九宫格的方向在哪里？</strong><p>它们都在 <b>xy 输入平面</b>里，是“地图上的行走方向”。函数值 z 是海拔；方向导数回答沿这个地图方向走时，z 每单位距离变化多少。不是在三维空间里任意飞行。</p></div>
+    </div>
+
+    <aside class="insight" aria-live="polite">
+      <div class="section-title"><h2>你选择的方向</h2><span class="mono" id="chosenTheta">θ=45°</span></div>
+      <div class="compass"><svg viewBox="0 0 260 190" aria-label="xy平面方向罗盘"><defs><marker id="tip" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#f15a24"/></marker></defs><g stroke="#c4cad3" stroke-width="1.5"><path d="M35 95H225"/><path d="M130 170V20"/><path d="M55 150L205 40"/><path d="M55 40L205 150"/></g><text x="230" y="99" fill="#667085">x</text><text x="134" y="18" fill="#667085">y</text><circle cx="130" cy="95" r="5" fill="#10213f"/><line id="compassArrow" x1="130" y1="95" x2="190" y2="35" stroke="#f15a24" stroke-width="3" marker-end="url(#tip)"/><circle id="compassDot" cx="190" cy="35" r="5" fill="#f15a24"/></svg></div>
+      <div class="readout"><small>高度变化 Δf</small><div class="big mono" id="deltaF">+0.0000</div></div>
+      <div class="readout"><small>走过距离 Δs（因为 u 是单位向量，所以 Δs=h）</small><div class="big mono" id="deltaS">0.5000</div></div>
+      <div class="readout"><small>这一小段的平均坡度 Δf/Δs</small><div class="big mono" id="secant">+0.0000</div></div>
+      <div class="limit"><small>当 h → 0</small><div>方向导数 D<sub>u</sub>f</div><div class="big mono" id="exact">+0.0000</div><small id="limitSentence">步长越小，平均坡度越靠近这个值。</small></div>
+      <div class="micro"><b>刚才这一下，细小变化在哪里？</b><div class="micro-grid"><div>θ 改变<br><span class="mono" id="thetaChange">0°</span></div><div>h 改变<br><span class="mono" id="hChange">0.000</span></div><div>坡度改变<br><span class="mono" id="slopeChange">0.0000</span></div><div>近似误差<br><span class="mono" id="error">0.0000</span></div></div></div>
+      <a class="detail-link" id="detailLink" href="方向导数本次数值代入详解.html">一边看图，一边把数字算出来 <span>→</span></a>
+    </aside>
+  </section>
+
+  <section class="explain">
+    <h2>公式不是起点，而是刚才实验的压缩写法</h2>
+    <div class="formula-flow"><div class="formula-step"><small>沿 xy 平面的单位方向 u 走 h</small><div class="math">P → P+h<strong>u</strong></div></div><div class="arrow">→</div><div class="formula-step"><small>新海拔减旧海拔，再除以距离</small><div class="math">[f(P+h<strong>u</strong>)−f(P)] / h</div></div><div class="arrow">→</div><div class="formula-step"><small>让步长无限缩小</small><div class="math">D<sub>u</sub>f(P)=∇f(P)·<strong>u</strong></div></div></div>
+    <div class="meaning"><div><b>P</b>固定的出发点</div><div><b>u=(cosθ,sinθ)</b>xy 平面的单位方向</div><div><b>h</b>走多远</div><div><b>∇f·u</b>梯度在该方向上的投影</div></div>
+  </section>
+
+  <section class="bridge">
+    <div class="section-title"><h2>同一个“方向”，地图和曲面各画一次</h2><p>左边决定往哪走，右边显示走起来是上坡还是下坡。</p></div>
+    <div class="bridge-grid">
+      <div class="map"><h3>① xy 平面：地图方向 u=(uₓ,uᵧ)</h3><p>只包含水平坐标，没有 z 分量。</p><svg viewBox="0 0 300 145"><g stroke="#d1d9e4" fill="none"><ellipse cx="150" cy="78" rx="105" ry="45"/><ellipse cx="150" cy="78" rx="72" ry="31"/><ellipse cx="150" cy="78" rx="38" ry="16"/></g><path d="M150 78L225 30" stroke="#f15a24" stroke-width="4"/><path d="M225 30l-14 2 7 11z" fill="#f15a24"/><circle cx="150" cy="78" r="6" fill="#10213f"/><text x="135" y="101" fill="#10213f">P</text><text x="228" y="27" fill="#f15a24">u</text></svg></div>
+      <div class="arrow">→</div>
+      <div class="surface"><h3>② 曲面上：抬起来的切向方向</h3><p>(uₓ,uᵧ,D<sub>u</sub>f)，第三个分量就是高度变化率。</p><svg viewBox="0 0 300 145"><path d="M25 112Q145 12 275 88" fill="none" stroke="#89bde9" stroke-width="3"/><path d="M105 78L225 35" stroke="#f15a24" stroke-width="4"/><path d="M225 35l-14-1 6 12z" fill="#f15a24"/><path d="M105 78H225V35" fill="none" stroke="#aab3bf" stroke-dasharray="5 4"/><circle cx="105" cy="78" r="6" fill="#10213f"/><text x="110" y="100" fill="#10213f">曲面上的 P</text><text x="230" y="56" fill="#f15a24">Dᵤf</text></svg></div>
+    </div>
+  </section>
+
+  <section class="steps"><div class="step"><span class="n">1</span><b>固定起点</b><p>点 P 不移动，否则比较的就不再是同一个地方的坡度。</p></div><div class="step"><span class="n">2</span><b>选方向并走一小步</b><p>u 决定方向，h 决定步子大小；u 通常规定为单位向量。</p></div><div class="step"><span class="n">3</span><b>高度差 ÷ 距离</b><p>先得到平均坡度；让 h 趋近 0，就得到瞬时的方向导数。</p></div></section>
+
+  <section class="quiz"><div><h2>哪个方向上升最快？</h2><p>不要背角度：应该选与梯度 ∇f(P) 同方向的 u。</p><div class="options" id="options"></div></div><div><button id="answerButton">显示答案</button><div class="answer" id="answer"><b id="answerTitle">答案</b><div id="answerText"></div></div></div></section>
+  <footer>离线互动演示 · 所有计算都在本页完成 · 方向角从 x 轴正方向逆时针计算</footer>
+</main>
+<script>
+  const dirs=[{deg:135,s:'↖'},{deg:90,s:'↑'},{deg:45,s:'↗'},{deg:180,s:'←'},null,{deg:0,s:'→'},{deg:225,s:'↙'},{deg:270,s:'↓'},{deg:315,s:'↘'}];
+  const functions={
+    bowl:{f:(x,y)=>(x*x+y*y)/4,g:(x,y)=>[x/2,y/2]},
+    saddle:{f:(x,y)=>(x*x-y*y)/4,g:(x,y)=>[x/2,-y/2]},
+    plane:{f:(x,y)=>.6*x-.3*y,g:()=>[.6,-.3]}
+  };
+  const el=id=>document.getElementById(id), grid=el('grid');
+  let prev={theta:45,h:.5,slope:0}, first=true;
+  function hValue(){return Math.pow(10,-3+Number(el('h').value)/100*3)}
+  function normDeg(d){return((d%360)+360)%360}
+  function signed(v,n=4){if(Math.abs(v)<.5*Math.pow(10,-n))v=0;return(v>0?'+':'')+v.toFixed(n)}
+  function state(deg=Number(el('theta').value)){
+    const fn=functions[el('fn').value],x=Number(el('px').value)||0,y=Number(el('py').value)||0,h=hValue(),r=deg*Math.PI/180,u=[Math.cos(r),Math.sin(r)],base=fn.f(x,y),next=fn.f(x+h*u[0],y+h*u[1]),df=next-base,sec=df/h,g=fn.g(x,y),exact=g[0]*u[0]+g[1]*u[1];
+    return{fn,x,y,h,deg,u,df,sec,g,exact,error:sec-exact};
+  }
+  function color(v){return Math.abs(v)<.00005?'neutral':v>0?'positive':'negative'}
+  function makeGrid(){grid.innerHTML='';dirs.forEach((d,i)=>{if(!d){const c=document.createElement('div');c.className='center-card';c.innerHTML='<div><b>P：不移动</b><span>所有方向从这里出发</span></div>';grid.append(c);return}const b=document.createElement('button');b.className='dir-card';b.dataset.deg=d.deg;b.innerHTML=`<span class="dir-head">${d.s} ${d.deg}°</span><canvas width="260" height="112"></canvas><span class="metrics"></span>`;b.onclick=()=>{el('theta').value=d.deg;update()};grid.append(b)})}
+  function draw(canvas,s){const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height;c.clearRect(0,0,w,h);c.fillStyle='#fcfdff';c.fillRect(0,0,w,h);const scale=30,levels=10,min=-2,max=2;function pt(x,y){return[w/2+(x-s.x)*scale,h/2-(y-s.y)*scale]}
+    // Compact contour approximation: sample short isoline segments with marching squares.
+    c.lineWidth=1;c.strokeStyle='#cfe5f8';const nx=42,ny=20,dx=(max-min)/nx,dy=(max-min)/ny,base=s.fn.f(s.x,s.y);
+    for(let k=-4;k<=5;k++){const level=base+k*.12;c.beginPath();for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){const x=min+i*dx,y=min+j*dy,v=[s.fn.f(x,y)-level,s.fn.f(x+dx,y)-level,s.fn.f(x+dx,y+dy)-level,s.fn.f(x,y+dy)-level],p=[];const corners=[[x,y],[x+dx,y],[x+dx,y+dy],[x,y+dy]];for(let e=0;e<4;e++){const a=e,b=(e+1)%4;if((v[a]<=0&&v[b]>0)||(v[a]>0&&v[b]<=0)){const t=v[a]/(v[a]-v[b]);p.push([corners[a][0]+t*(corners[b][0]-corners[a][0]),corners[a][1]+t*(corners[b][1]-corners[a][1])])}}if(p.length>=2){const A=pt(...p[0]),B=pt(...p[1]);c.moveTo(...A);c.lineTo(...B)}}c.stroke()}
+    const P=pt(s.x,s.y),len=Math.min(44,18+22*Math.log10(1+s.h*9)),Q=[P[0]+len*s.u[0],P[1]-len*s.u[1]],cls=color(s.exact),col=cls==='positive'?'#f15a24':cls==='negative'?'#16835f':'#98a2b3';c.strokeStyle=col;c.fillStyle=col;c.lineWidth=3;c.beginPath();c.moveTo(...P);c.lineTo(...Q);c.stroke();const a=Math.atan2(Q[1]-P[1],Q[0]-P[0]);c.beginPath();c.moveTo(...Q);c.lineTo(Q[0]-10*Math.cos(a-.45),Q[1]-10*Math.sin(a-.45));c.lineTo(Q[0]-10*Math.cos(a+.45),Q[1]-10*Math.sin(a+.45));c.closePath();c.fill();c.fillStyle='#10213f';c.beginPath();c.arc(...P,4,0,Math.PI*2);c.fill()}
+  function update(){const s=state(),theta=normDeg(s.deg),cards=[...document.querySelectorAll('.dir-card')];el('hLabel').textContent=s.h.toFixed(3);el('thetaLabel').textContent=Math.round(theta)+'°';el('chosenTheta').textContent='θ='+Math.round(theta)+'°';cards.forEach(card=>{const cs=state(Number(card.dataset.deg));card.classList.toggle('selected',Math.abs(((Number(card.dataset.deg)-theta+540)%360)-180)<22.5);card.querySelector('.metrics').innerHTML=`<span>高度差 Δf</span><span class="value ${color(cs.df)}">${signed(cs.df)}</span><span>距离 Δs</span><span class="value">${cs.h.toFixed(4)}</span><span>平均坡度</span><span class="value ${color(cs.sec)}">${signed(cs.sec,3)}</span><span>极限 Dᵤf</span><span class="value ${color(cs.exact)}">${signed(cs.exact,3)}</span>`;draw(card.querySelector('canvas'),cs)});
+    const ids={deltaF:signed(s.df),deltaS:s.h.toFixed(4),secant:signed(s.sec),exact:signed(s.exact)};Object.entries(ids).forEach(([k,v])=>{el(k).textContent=v;el(k).className=(k==='deltaS'?'big mono':'big mono '+color(k==='deltaF'?s.df:k==='secant'?s.sec:s.exact))});el('error').textContent=signed(Math.abs(s.error));
+    if(first){prev={theta,h:s.h,slope:s.sec};first=false}el('thetaChange').textContent=signed(((theta-prev.theta+540)%360)-180,0)+'°';el('hChange').textContent=signed(s.h-prev.h,3);el('slopeChange').textContent=signed(s.sec-prev.slope);prev={theta,h:s.h,slope:s.sec};
+    const cx=130,cy=95,L=75,x2=cx+L*s.u[0],y2=cy-L*s.u[1];['compassArrow','compassDot'].forEach(id=>{const q=el(id);if(id==='compassArrow'){q.setAttribute('x2',x2);q.setAttribute('y2',y2)}else{q.setAttribute('cx',x2);q.setAttribute('cy',y2)}});updateQuiz(s)
+  }
+  function updateQuiz(s){const gd=normDeg(Math.atan2(s.g[1],s.g[0])*180/Math.PI),choices=[0,45,90,315],nearest=choices.reduce((a,b)=>Math.abs(((b-gd+540)%360)-180)<Math.abs(((a-gd+540)%360)-180)?b:a);el('options').innerHTML=choices.map(d=>`<div class="option ${el('answer').classList.contains('show')&&d===nearest?'correct':''}">${d}° ${dirs.find(x=>x&&x.deg===d)?.s||''}</div>`).join('');el('answerTitle').textContent=`最快方向约为 ${Math.round(gd)}°`;el('answerText').innerHTML=`因为梯度 ∇f(P)=(${s.g[0].toFixed(2)}, ${s.g[1].toFixed(2)}) 指向函数增长最快的方向；最大方向导数等于 |∇f|=${Math.hypot(...s.g).toFixed(3)}。`}
+  ['fn','px','py','h','theta'].forEach(id=>el(id).addEventListener('input',update));el('answerButton').onclick=()=>{el('answer').classList.toggle('show');el('answerButton').textContent=el('answer').classList.contains('show')?'收起答案':'显示答案';update()};el('reset').onclick=()=>{el('fn').value='bowl';el('px').value=1;el('py').value=1;el('h').value=35;el('theta').value=45;el('answer').classList.remove('show');el('answerButton').textContent='显示答案';first=true;update()};makeGrid();update();
+</script>
+</body>
+</html>

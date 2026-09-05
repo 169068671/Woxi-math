@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方向导数三方向3D全景图</title>
+<style>
+  :root {
+    --bg: #faf7f2;
+    --card: #ffffff;
+    --text: #2d2a26;
+    --text-2: #6b655d;
+    --text-3: #9c948a;
+    --blue: #2563eb;
+    --blue-l: #dbeafe;
+    --orange: #ea580c;
+    --orange-l: #fed7aa;
+    --green: #16a34a;
+    --green-l: #bbf7d0;
+    --border: #e8e2d9;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  .header { text-align: center; margin-bottom: 20px; }
+  .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .header p { font-size: 14px; color: var(--text-2); }
+
+  /* Controls */
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    justify-content: center; margin-bottom: 16px;
+  }
+  .preset-btns { display: flex; gap: 6px; }
+  .preset-btn {
+    padding: 6px 14px; border: 1px solid var(--border); border-radius: 20px;
+    background: var(--card); color: var(--text-2); font-size: 13px;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .preset-btn:hover { border-color: var(--text-2); color: var(--text); }
+  .preset-btn.active {
+    background: var(--text); color: #fff; border-color: var(--text);
+  }
+  .slider-group { display: flex; gap: 16px; align-items: center; }
+  .slider-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); }
+  .slider-item input[type="range"] { width: 110px; accent-color: var(--blue); }
+  .slider-item strong { min-width: 36px; color: var(--text); font-weight: 600; }
+
+  /* Toggle buttons */
+  .toggles {
+    display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border: 2px solid; border-radius: 20px;
+    cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;
+    background: var(--card);
+  }
+  .toggle .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .toggle.x { border-color: var(--blue); color: var(--blue); }
+  .toggle.x .dot { background: var(--blue); }
+  .toggle.x.off { opacity: 0.35; }
+  .toggle.y { border-color: var(--orange); color: var(--orange); }
+  .toggle.y .dot { background: var(--orange); }
+  .toggle.y.off { opacity: 0.35; }
+  .toggle.g { border-color: var(--green); color: var(--green); }
+  .toggle.g .dot { background: var(--green); }
+  .toggle.g.off { opacity: 0.35; }
+
+  /* SVG scene */
+  .scene-wrap {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden; touch-action: none; cursor: grab;
+    position: relative;
+  }
+  .scene-wrap:active { cursor: grabbing; }
+  .scene-wrap svg { display: block; width: 100%; }
+
+  /* Summary panel */
+  .summary {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 16px;
+  }
+  .sum-card {
+    border-radius: var(--radius); padding: 14px 16px; text-align: center;
+    border: 2px solid;
+  }
+  .sum-card.x { background: var(--blue-l); border-color: var(--blue); }
+  .sum-card.y { background: var(--orange-l); border-color: var(--orange); }
+  .sum-card.g { background: var(--green-l); border-color: var(--green); }
+  .sum-card .label { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .sum-card.x .label { color: var(--blue); }
+  .sum-card.y .label { color: var(--orange); }
+  .sum-card.g .label { color: var(--green); }
+  .sum-card .val { font-size: 24px; font-weight: 800; color: var(--text); }
+  .sum-card .desc { font-size: 12px; color: var(--text-2); margin-top: 4px; }
+
+  /* Decomposition bar */
+  .decomp {
+    margin-top: 16px; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow);
+  }
+  .decomp h3 { font-size: 15px; margin-bottom: 12px; text-align: center; }
+  .decomp-bar { display: flex; height: 40px; border-radius: 8px; overflow: hidden; box-shadow: var(--shadow); }
+  .decomp-seg { display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 14px; }
+  .decomp-seg.x { background: var(--blue); }
+  .decomp-seg.y { background: var(--orange); }
+  .decomp-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px; }
+  .decomp-total { text-align: center; margin-top: 10px; font-size: 14px; font-weight: 700; color: var(--green); }
+
+  /* Triangle inset */
+  .triangle-inset {
+    margin-top: 16px; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  .triangle-inset svg { width: 200px; height: 160px; flex-shrink: 0; }
+  .triangle-inset .info { flex: 1; min-width: 200px; }
+  .triangle-inset .info p { font-size: 14px; margin-bottom: 6px; }
+  .triangle-inset .info .hl { font-weight: 700; }
+
+  /* Hint text */
+  .hint { text-align: center; font-size: 13px; color: var(--text-3); margin-top: 12px; }
+
+  /* SVG text styles */
+  text { font-family: -apple-system, "PingFang SC", sans-serif; paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
+  @media (max-width: 600px) {
+    .summary { grid-template-columns: 1fr; }
+    .container { padding: 16px 12px 40px; }
+    .header h1 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>三个单位方向，对应三种高度变化</h1>
+    <p>函数 z = 3x + 4y，从同一起点 O，沿三个方向各水平移动 1 单位</p>
+  </div>
+
+  <div class="toggles">
+    <div class="toggle x" data-dir="x" onclick="toggleDir('x')"><span class="dot"></span>x 轴方向</div>
+    <div class="toggle y" data-dir="y" onclick="toggleDir('y')"><span class="dot"></span>y 轴方向</div>
+    <div class="toggle g" data-dir="g" onclick="toggleDir('g')"><span class="dot"></span>梯度方向</div>
+  </div>
+
+  <div class="controls">
+    <div class="preset-btns">
+      <button class="preset-btn" onclick="setView(-30,35)">默认视角</button>
+      <button class="preset-btn" onclick="setView(0,20)">正面平视</button>
+      <button class="preset-btn" onclick="setView(-90,0)">侧面正视</button>
+      <button class="preset-btn" onclick="setView(-45,65)">俯视</button>
+    </div>
+    <div class="slider-group">
+      <div class="slider-item">
+        <span>水平旋转</span>
+        <input type="range" id="view-azimuth" min="-180" max="180" step="1" value="-30">
+        <strong id="az-val">-30°</strong>
+      </div>
+      <div class="slider-item">
+        <span>俯仰角</span>
+        <input type="range" id="view-elevation" min="0" max="80" step="1" value="35">
+        <strong id="el-val">35°</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="scene-wrap" id="scene">
+    <svg id="canvas" role="img" aria-label="三方向3D全景图"></svg>
+  </div>
+  <div class="hint">拖拽画面可旋转视角 · 点击上方按钮可单独显示/隐藏某个方向</div>
+
+  <div class="summary">
+    <div class="sum-card x">
+      <div class="label">沿 x 轴走 1</div>
+      <div class="val">z +3</div>
+      <div class="desc">偏导 fₓ = 3</div>
+    </div>
+    <div class="sum-card y">
+      <div class="label">沿 y 轴走 1</div>
+      <div class="val">z +4</div>
+      <div class="desc">偏导 fᵧ = 4</div>
+    </div>
+    <div class="sum-card g">
+      <div class="label">沿梯度走 1</div>
+      <div class="val">z +5</div>
+      <div class="desc">最大变化率 ‖∇f‖ = 5</div>
+    </div>
+  </div>
+
+  <div class="decomp">
+    <h3>高度 5 怎样由两个偏导共同产生</h3>
+    <p style="text-align:center; font-size:13px; color:var(--text-2); margin-bottom:12px;">
+      沿梯度单位方向 (3/5, 4/5) 水平走 1 单位，x 贡献 + y 贡献 = 总高度变化
+    </p>
+    <div class="decomp-bar">
+      <div class="decomp-seg x" style="width: 36%;">3 × 3/5 = 1.8</div>
+      <div class="decomp-seg y" style="width: 64%;">4 × 4/5 = 3.2</div>
+    </div>
+    <div class="decomp-labels">
+      <span style="color:var(--blue);">x 偏导贡献</span>
+      <span style="color:var(--orange);">y 偏导贡献</span>
+    </div>
+    <div class="decomp-total">总高度变化：1.8 + 3.2 = 5 = ‖∇f‖</div>
+  </div>
+
+  <div class="triangle-inset">
+    <svg viewBox="0 0 200 160">
+      <text x="100" y="18" text-anchor="middle" font-size="13" font-weight="700" fill="#2d2a26">偏导构成 3-4-5 直角三角形</text>
+      <!-- Triangle -->
+      <polygon points="30,130 150,130 150,40" fill="none" stroke="#9c948a" stroke-width="1.5" fill-opacity="0"/>
+      <!-- x side (blue) -->
+      <line x1="30" y1="130" x2="150" y2="130" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>
+      <text x="90" y="148" text-anchor="middle" font-size="13" font-weight="700" fill="#2563eb">x 偏导 = 3</text>
+      <!-- y side (orange) -->
+      <line x1="150" y1="130" x2="150" y2="40" stroke="#ea580c" stroke-width="6" stroke-linecap="round"/>
+      <text x="168" y="88" font-size="13" font-weight="700" fill="#ea580c">y 偏导 = 4</text>
+      <!-- hypotenuse (green) -->
+      <line x1="30" y1="130" x2="150" y2="40" stroke="#16a34a" stroke-width="6" stroke-linecap="round"/>
+      <text x="60" y="72" font-size="13" font-weight="700" fill="#16a34a">梯度长度 = 5</text>
+      <!-- right angle mark -->
+      <path d="M 138,130 L 138,118 L 150,118" fill="none" stroke="#2d2a26" stroke-width="1.5"/>
+    </svg>
+    <div class="info">
+      <p><span class="hl" style="color:var(--blue);">x 偏导 = 3</span>：沿 x 轴走 1，z 增 3</p>
+      <p><span class="hl" style="color:var(--orange);">y 偏导 = 4</span>：沿 y 轴走 1，z 增 4</p>
+      <p><span class="hl" style="color:var(--green);">梯度长度 = 5</span>：沿梯度走 1，z 增 5（最大）</p>
+      <p style="margin-top:10px; color:var(--text-2); font-size:13px;">三个值构成勾股定理：3² + 4² = 5²</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const svg = document.getElementById('canvas');
+  const scene = document.getElementById('scene');
+  const azInput = document.getElementById('view-azimuth');
+  const elInput = document.getElementById('view-elevation');
+  const azVal = document.getElementById('az-val');
+  const elVal = document.getElementById('el-val');
+  const ns = 'http://www.w3.org/2000/svg';
+  let dragging = false, prev = null;
+  let visible = { x: true, y: true, g: true };
+
+  function make(tag, attrs, parent, text) {
+    const el = document.createElementNS(ns, tag);
+    for (const [k, v] of Object.entries(attrs || {})) el.setAttribute(k, v);
+    if (text !== undefined) el.textContent = text;
+    parent.appendChild(el);
+    return el;
+  }
+
+  function setView(az, el) {
+    azInput.value = az; elInput.value = el; draw();
+  }
+  window.setView = setView;
+
+  window.toggleDir = function(dir) {
+    visible[dir] = !visible[dir];
+    document.querySelector(`.toggle[data-dir="${dir}"]`).classList.toggle('off', !visible[dir]);
+    draw();
+  };
+
+  function draw() {
+    const width = Math.max(320, Math.round(scene.getBoundingClientRect().width));
+    const height = Math.min(620, Math.max(440, width * 0.62));
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.style.height = height + 'px';
+    svg.replaceChildren();
+
+    const az = Number(azInput.value) * Math.PI / 180;
+    const el = Number(elInput.value) * Math.PI / 180;
+    azVal.textContent = `${Number(azInput.value)}°`;
+    elVal.textContent = `${Number(elInput.value)}°`;
+
+    const cx = width / 2;
+    const cy = height * 0.52;
+    const scale = Math.min(width * 0.22, 200);
+    const zScale = 0.16;
+
+    function proj(p) {
+      const [x, y, z] = p;
+      const xr = x * Math.cos(az) - y * Math.sin(az);
+      const yr = x * Math.sin(az) + y * Math.cos(az);
+      return [
+        cx + scale * xr,
+        cy + scale * (yr * Math.sin(el) - z * zScale * Math.cos(el))
+      ];
+    }
+
+    function pStr(pts) { return pts.map(p => proj(p).map(v => v.toFixed(1)).join(',')).join(' '); }
+    function line(a, b, attrs, parent) {
+      const p1 = proj(a), p2 = proj(b);
+      return make('line', { x1: p1[0], y1: p1[1], x2: p2[0], y2: p2[1], ...attrs }, parent);
+    }
+    function label(p, txt, dx, dy, cls, anchor) {
+      const pt = proj(p);
+      const a = make('text', { x: pt[0]+dx, y: pt[1]+dy, class: cls, 'text-anchor': anchor || 'start' }, svg, txt);
+      return a;
+    }
+
+    // === Defs ===
+    const defs = make('defs', {}, svg);
+
+    // Arrow markers
+    function mkMarker(id, color) {
+      const m = make('marker', { id, markerWidth: 10, markerHeight: 10, refX: 8, refY: 5, orient: 'auto' }, defs);
+      make('path', { d: 'M0,0 L10,5 L0,10 Z', fill: color }, m);
+    }
+    mkMarker('arr-axis', '#6b655d');
+    mkMarker('arr-x', '#2563eb');
+    mkMarker('arr-y', '#ea580c');
+    mkMarker('arr-g', '#16a34a');
+
+    // === Ground plane ===
+    const gGround = make('g', {}, svg);
+    const groundCorners = [[-0.25,-0.25,0],[1.4,-0.25,0],[1.4,1.4,0],[-0.25,1.4,0]];
+    make('polygon', { points: pStr(groundCorners), fill: '#f0ebe2', 'fill-opacity': 0.6, stroke: '#d4ccbf', 'stroke-width': 1.2 }, gGround);
+    // Grid lines
+    for (let i = 0; i <= 1.2; i += 0.4) {
+      line([i, -0.25, 0], [i, 1.3, 0], { stroke: '#d4ccbf', 'stroke-width': 1, 'stroke-opacity': 0.7 }, gGround);
+      line([-0.25, i, 0], [1.3, i, 0], { stroke: '#d4ccbf', 'stroke-width': 1, 'stroke-opacity': 0.7 }, gGround);
+    }
+
+    // Unit circle on ground
+    const circlePts = [];
+    for (let i = 0; i <= 64; i++) {
+      const a = (i / 64) * 2 * Math.PI;
+      circlePts.push([Math.cos(a), Math.sin(a), 0]);
+    }
+    make('polygon', { points: pStr(circlePts), fill: 'none', stroke: '#9c948a', 'stroke-width': 1.5, 'stroke-dasharray': '4 3', 'stroke-opacity': 0.6 }, gGround);
+    label([Math.cos(0.3), Math.sin(0.3), 0], '单位圆（水平走1）', 8, -4, 'svg-lbl svg-muted', 'start');
+
+    // === Surface plane (z=3x+4y) ===
+    const gSurf = make('g', {}, svg);
+    const surfCorners = [[0,0,0],[1.3,0,3.9],[1.3,1.3,7.8],[0,1.3,5.2]];
+    make('polygon', { points: pStr(surfCorners), fill: '#16a34a', 'fill-opacity': 0.08, stroke: '#16a34a', 'stroke-width': 1.4, 'stroke-opacity': 0.5 }, gSurf);
+    // Contour lines on surface
+    for (let v = 1; v <= 6; v++) {
+      // z = 3x+4y = v, intersect with surface patch boundaries
+      // At x=0: y=v/4 (if v<=5.2), at x=1.3: y=(v-3.9)/4 (if valid)
+      let pts = [];
+      if (v/4 >= 0 && v/4 <= 1.3) pts.push([0, v/4, v]);
+      if ((v-3.9)/4 >= 0 && (v-3.9)/4 <= 1.3) pts.push([1.3, (v-3.9)/4, v]);
+      if (v/3 >= 0 && v/3 <= 1.3) pts.push([v/3, 0, v]);
+      if ((v-5.2)/3 >= 0 && (v-5.2)/3 <= 1.3) pts.push([v/3, 1.3, v]); // x where y=1.3
+      if (pts.length >= 2) {
+        line(pts[0], pts[1], { stroke: '#16a34a', 'stroke-width': 1, 'stroke-opacity': 0.25, 'stroke-dasharray': '3 3' }, gSurf);
+      }
+    }
+
+    // === Axes ===
+    const gAxes = make('g', {}, svg);
+    line([0,0,0], [1.6,0,0], { stroke: '#6b655d', 'stroke-width': 2, 'marker-end': 'url(#arr-axis)' }, gAxes);
+    line([0,0,0], [0,1.6,0], { stroke: '#6b655d', 'stroke-width': 2, 'marker-end': 'url(#arr-axis)' }, gAxes);
+    line([0,0,0], [0,0,6.5], { stroke: '#6b655d', 'stroke-width': 2, 'marker-end': 'url(#arr-axis)' }, gAxes);
+    label([1.6,0,0], 'x', 10, 6, 'svg-lbl svg-strong');
+    label([0,1.6,0], 'y', 10, 6, 'svg-lbl svg-strong');
+    label([0,0,6.5], 'z', 8, -6, 'svg-lbl svg-strong');
+    label([0,0,0], 'O', -10, 18, 'svg-lbl svg-muted', 'end');
+
+    // z-axis tick marks
+    for (let z = 1; z <= 5; z++) {
+      const p1 = proj([0, 0, z]);
+      make('line', { x1: p1[0]-4, y1: p1[1], x2: p1[0]+4, y2: p1[1], stroke: '#6b655d', 'stroke-width': 1.5 }, gAxes);
+      label([0, 0, z], String(z), -12, 5, 'svg-lbl svg-muted', 'end');
+    }
+
+    // === Three directions ===
+    const cases = [
+      { key: 'x', base: [1,0,0], top: [1,0,3], color: '#2563eb', name: 'x 轴方向', rise: 3, marker: 'arr-x' },
+      { key: 'y', base: [0,1,0], top: [0,1,4], color: '#ea580c', name: 'y 轴方向', rise: 4, marker: 'arr-y' },
+      { key: 'g', base: [0.6,0.8,0], top: [0.6,0.8,5], color: '#16a34a', name: '梯度方向 (3/5, 4/5)', rise: 5, marker: 'arr-g' },
+    ];
+
+    // Gradient angle on ground
+    const gAngleStart = [0.15, 0, 0];
+    const gAngleEnd = [0.15 * Math.cos(0.927) + 0.15 * Math.sin(0.927) * 0, 0.15 * Math.sin(0.927), 0]; // ~ not exact, use direct
+    // Draw angle arc on ground between x-axis and gradient direction
+    const anglePts = [];
+    for (let i = 0; i <= 20; i++) {
+      const a = (i / 20) * Math.atan2(0.8, 0.6); // arctan(4/3)
+      anglePts.push([0.2 * Math.cos(a), 0.2 * Math.sin(a), 0]);
+    }
+    if (visible.g && visible.x) {
+      make('polyline', { points: pStr(anglePts), fill: 'none', stroke: '#9c948a', 'stroke-width': 1.5, 'stroke-dasharray': '3 2' }, gGround);
+      label([0.28, 0.18, 0], 'θ≈53°', 4, -4, 'svg-lbl svg-muted', 'start');
+    }
+
+    cases.forEach(item => {
+      if (!visible[item.key]) return;
+      const gVec = make('g', {}, svg);
+
+      // Base arrow (horizontal, on ground)
+      line([0,0,0], item.base, { stroke: item.color, 'stroke-width': 5, 'stroke-linecap': 'round', 'marker-end': `url(#${item.marker})` }, gVec);
+
+      // Right-angle marker at base-to-rise corner
+      const bp = proj(item.base);
+      const r = 10;
+      // Determine direction of right angle (vertical rise)
+      make('path', { d: `M ${bp[0]} ${bp[1]} L ${bp[0]+r} ${bp[1]} L ${bp[0]+r} ${bp[1]-r}`, fill: 'none', stroke: item.color, 'stroke-width': 1.5, 'stroke-opacity': 0.6 }, gVec);
+
+      // Rise arrow (vertical, dashed)
+      line(item.base, item.top, { stroke: item.color, 'stroke-width': 4, 'stroke-linecap': 'round', 'stroke-dasharray': '8 5', 'marker-end': `url(#${item.marker})` }, gVec);
+
+      // Surface line (from origin to top)
+      line([0,0,0], item.top, { stroke: item.color, 'stroke-width': 2.5, 'stroke-opacity': 0.35 }, gVec);
+
+      // Top point
+      const tp = proj(item.top);
+      make('circle', { cx: tp[0], cy: tp[1], r: 6, fill: item.color, stroke: '#fff', 'stroke-width': 2 }, gVec);
+
+      // Base point
+      make('circle', { cx: bp[0], cy: bp[1], r: 4, fill: item.color, stroke: '#fff', 'stroke-width': 1.5 }, gVec);
+
+      // Labels
+      const labelOffset = item.key === 'y' ? -16 : 12;
+      const labelAnchor = item.key === 'y' ? 'end' : 'start';
+      label(item.base, item.name, labelOffset, 22, 'svg-lbl svg-strong', labelAnchor);
+
+      const riseLabel = `z +${item.rise}${item.key === 'g' ? ' (最大)' : ''}`;
+      label(item.top, riseLabel, 12, -8, 'svg-lbl svg-strong', 'start');
+    });
+
+    // Ground projection label
+    if (visible.x || visible.y || visible.g) {
+      label([0.5, 0.6, 0], '底面箭头长度 = 1（单位距离）', 0, 50, 'svg-lbl svg-muted', 'middle');
+    }
+
+    // Add style element for SVG text classes
+    const styleEl = make('style', {}, svg);
+    styleEl.textContent = `
+      .svg-lbl { font-size: 12px; fill: #2d2a26; paint-order: stroke; stroke: #ffffff; stroke-width: 3px; stroke-linejoin: round; }
+      .svg-strong { font-weight: 700; }
+      .svg-muted { fill: #9c948a; font-weight: 400; }
+    `;
+  }
+
+  // Drag interaction
+  scene.addEventListener('pointerdown', e => {
+    dragging = true; prev = { x: e.clientX, y: e.clientY };
+    scene.setPointerCapture(e.pointerId);
+  });
+  scene.addEventListener('pointermove', e => {
+    if (!dragging || !prev) return;
+    const dx = e.clientX - prev.x;
+    const dy = e.clientY - prev.y;
+    azInput.value = Math.max(-180, Math.min(180, Number(azInput.value) + dx * 0.5));
+    elInput.value = Math.max(0, Math.min(80, Number(elInput.value) - dy * 0.3));
+    prev = { x: e.clientX, y: e.clientY };
+    draw();
+  });
+  scene.addEventListener('pointerup', e => { dragging = false; prev = null; scene.releasePointerCapture(e.pointerId); });
+  scene.addEventListener('pointercancel', () => { dragging = false; prev = null; });
+
+  azInput.addEventListener('input', draw);
+  elInput.addEventListener('input', draw);
+  new ResizeObserver(draw).observe(scene);
+
+  // Mark active preset
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  draw();
+})();
+</script>
+</body>
+</html>
